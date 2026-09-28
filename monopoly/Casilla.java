@@ -146,6 +146,16 @@ public class Casilla() {
 
             return false; //Confirmamos que el jugador no pudo pagar el impuesto
         }
+
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) {//Comprobamos que la casilla en la que hemos caido es la de parking
+
+            actual.sumarFortuna(valor); //Le sumamos el valor que hay en el parking a la fortuna del jugador
+            valor = 0; //Restablecemos el valor del parking a 0
+
+            return true; //Confirmamos que el jugador ha recibido el dinero del parking
+        }
+
+
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
@@ -189,5 +199,9 @@ public class Casilla() {
     public int getPosicion() {
         return this.posicion;
     }//Funcion para devolver en que casilla esta el jugador
+
+    public String getNombre() {
+        return this.nombre;
+    }//funcion para devolver el nombre
 
 }
