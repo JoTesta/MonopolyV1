@@ -3,7 +3,6 @@ package monopoly;
 import java.util.ArrayList;
 import partida.*;
 
-efwfygwkfuwgfw
 
 
 public class Menu {
