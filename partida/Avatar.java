@@ -31,6 +31,19 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        int posicionActual = this.lugar.getPosicion();
+        int nuevaPosicion = (posicionActual + valorTirada) % 40;
+        boolean pasaPorSalida = nuevaPosicion < posicionActual;
+
+        if (pasaPorSalida){
+            this.jugador.sumarFortuna(2000000);
+            System.out.println("El jugador "+ this.jugador.getNombre() + " pasa por la salida y recibe 2.000.000€  ");
+        }
+
+        this.lugar.eliminarAvatar(this);
+
+        Casilla nuevaCasilla = null;
+        for (ArrayList<Casilla)
 
     }
 
@@ -54,4 +67,13 @@ public class Avatar {
         } while (repetido);
         this.id = candidato;
     }
+
+    public Casilla getLugar() {
+        return this.lugar;
+    }
+
+    public void setLugar(Casilla lugar){
+        this.lugar = lugar;
+    }
+
 }
