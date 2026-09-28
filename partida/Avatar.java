@@ -62,6 +62,7 @@ public class Avatar {
         }
 
 
+
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
