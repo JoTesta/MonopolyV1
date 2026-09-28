@@ -31,6 +31,7 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
@@ -38,5 +39,19 @@ public class Avatar {
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
+        String candidato;
+        boolean repetido;
+        do {
+            char letra = (char) (Math.random() * 256);
+            candidato = String.valueOf(letra);
+            repetido = false;
+            for (Avatar av : avCreados) {
+                if (av.id != null && av.id.equals(candidato)) {
+                    repetido = true;
+                    break;
+                }
+            }
+        } while (repetido);
+        this.id = candidato;
     }
 }
