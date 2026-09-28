@@ -43,7 +43,24 @@ public class Avatar {
         this.lugar.eliminarAvatar(this);
 
         Casilla nuevaCasilla = null;
-        for (ArrayList<Casilla)
+        for (ArrayList<Casilla> lado : casillas){
+            for (Casilla c : lado) {
+                if (c.getPosicion() == nuevaPosicion) {
+                    nuevaCasilla = c;
+                    break;
+                    // Salimos del bucle interior al encontrarla
+
+                }
+            }
+        }
+
+        if (nuevaCasilla != null){
+            this.lugar = nuevaCasilla;
+            this.lugar.anhadirAvatar(this);
+
+            if (this.lugar.getNombre().equals)
+        }
+
 
     }
 
@@ -75,5 +92,5 @@ public class Avatar {
     public void setLugar(Casilla lugar){
         this.lugar = lugar;
     }
-
+// este set y get para encarcelar en judador
 }
