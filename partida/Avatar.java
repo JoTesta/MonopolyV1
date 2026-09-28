@@ -58,7 +58,7 @@ public class Avatar {
             this.lugar = nuevaCasilla;
             this.lugar.anhadirAvatar(this);
 
-            if (this.lugar.getNombre().equals)
+            if (this.lugar.getNombre().equalsIgnoreCase("IrCarcel")) {}
         }
 
 
@@ -94,4 +94,16 @@ public class Avatar {
         this.lugar = lugar;
     }
 // este set y get para encarcelar en judador
+
+    public class Lugar {
+        private String nombre;
+
+        public Lugar(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getNombre() {
+            return this.nombre;
+        }
+    }
 }

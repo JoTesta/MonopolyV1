@@ -190,4 +190,6 @@ public class Casilla() {
         return this.posicion;
     }//Funcion para devolver en que casilla esta el jugador
 
+    public Object getNombre() {
+    }
 }
