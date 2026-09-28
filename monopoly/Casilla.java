@@ -109,6 +109,43 @@ public class Casilla() {
                 return false;//Confirmamos que el jugador no pudo pagar su deuda
             }
         }
+
+        if (tipo.equalsIgnoreCase("transporte")){ //Comprobamos que la casilla en la que hemos caido es la de transporte
+
+            if (duenho != banca && duenho != actual){ //Si el dueño es diferente de la banca o del propio jugador
+
+                float transporte = 250000; //El precio a pagar por caer en dicha casilla es de 250000
+
+                if(actual.getFortuna() >= transporte){ //Comprobamos que el jugador tiene mas fortuna que lo que tiene que pagar
+
+                    actual.sumarFortuna(-transporte); //Le quitamos al jugador el dinero del transporte
+                    actual.sumarGastos(transporte); //Guardamos la operación que acabamos de hacer
+                    duenho.sumarFortuna(transporte);//Le añadimos al dueño de dicha casilla el importe que se ha pagado
+
+                    return true; //Confirmamos que el jugador pudo pagar el importe
+                }
+
+                return false; //Confirmamos que el jugador no pudo pagar el importe
+            }
+        }
+
+        if (tipo.equalsIgnoreCase("suerte") || tipo.equalsIgnoreCase("comunidad")) { //Comprobamos que la casilla en la que hemos caido es la de suerte o caja de comunidad
+
+            return true; //Por ahora no hacemos nada ya que es la primera entrega
+        }
+
+        if (tipo.equalsIgnoreCase("Impuestos")){ //Comprobamos que en la casilla que hemos caido es la de impuestos
+
+            if (actual.getFortuna() >= impuesto){ //Comprobamos que el jugador tiene dinero suficiente para pagar el impuesto
+
+                actual.sumarFortuna(-impuesto); //Le restamos el valor del impuesto a la fortuna del jugador
+                actual.sumarGastos(impuesto);  //Guardamos la operacion
+
+                return true;//Confirmamos que el jugador pudo pagar el impuesto
+            }
+
+            return false; //Confirmamos que el jugador no pudo pagar el impuesto
+        }
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
@@ -148,5 +185,9 @@ public class Casilla() {
      */
     public String casEnVenta() {
     }
+
+    public int getPosicion() {
+        return this.posicion;
+    }//Funcion para devolver en que casilla esta el jugador
 
 }
