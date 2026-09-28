@@ -19,6 +19,14 @@ public class Jugador {
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
+        this.nombre = "Banca";
+        this.fortuna = Valor.FORTUNA_BANCA;
+        this.gastos = 0f;
+        this.enCarcel = false;
+        this.tiradasCarcel = 0;
+        this.vueltas = 0;
+        this.avatar = null;
+        this.propiedades = new ArrayList<>();
     }
 
     /*Constructor principal. Requiere parámetros:
@@ -27,30 +35,65 @@ public class Jugador {
     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
+        this.nombre = nombre;
+        //avatar al final
+        this.fortuna = Valor.FORTUNA_INICIAL;
+        this.gastos = 0f;
+        this.enCarcel = false;
+        this.tiradasCarcel = 0;
+        this.vueltas = 0;
+        this.propiedades = new ArrayList<>();
+        this.avatar = new Avatar(tipoAvatar,this, inicio,avCreados);
     }
 
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
+        if (casilla!=null && !this.propiedades.contains(casilla)){
+            this.propiedades.add(casilla);
+        }
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
     public void eliminarPropiedad(Casilla casilla) {
+        if (casilla != null && this.propiedades.contains(casilla)){
+            this.propiedades.remove(casilla);
+        }
     }
 
     //Método para añadir fortuna a un jugador
     //Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se pasaría un valor negativo.
     public void sumarFortuna(float valor) {
+        this.fortuna += valor;
     }
 
     //Método para sumar gastos a un jugador.
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {
+        this.gastos += valor;
     }
+
+    //Método para sumar vueltas
+    public void sumarVueltas(){
+        this.vueltas++;
+    }
+
 
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+
     }
 
+
+    //metodo para poner enCarcel a cualquier valor
+    public void setEnCarcel(boolean enCarcel){
+        this.enCarcel=enCarcel;
+        if (!enCarcel){this.tiradasCarcel = 0;}
+    }
+
+
+    public String getNombre(){
+        return this.nombre;
+    }
 }
