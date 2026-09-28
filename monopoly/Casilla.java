@@ -3,7 +3,7 @@ package monopoly;
 import partida.*;
 import java.util.ArrayList;
 
-
+public class Casilla() {
 
     //Atributos:
     private String nombre; //Nombre de la casilla
@@ -29,7 +29,7 @@ import java.util.ArrayList;
         this.tipo = tipo;
         this.posicion = posicion;
         this.valor = valor;
-        this. duenho = duenho;
+        this.duenho = duenho;
         this.avatares = new ArrayList<>();
     } // Si hacemos new Casilla("Trans1", "Transporte", 5, 500000, banca); se guardaría Nombre = Trans1, tipo = transporte...
 
@@ -135,7 +135,7 @@ import java.util.ArrayList;
      * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
      * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
     public void sumarValor(float suma) {
-        this.valor +=suma;
+        this.valor += suma;
     }
 
     /*Método para mostrar información sobre una casilla.
