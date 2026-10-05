@@ -146,6 +146,7 @@ public class Casilla {
 
             return false; //Confirmamos que el jugador no pudo pagar el impuesto
         }
+
         if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) { //Comprobamos que la casilla en la que hemos caido es la de parking
 
             actual.sumarFortuna(valor); //Le sumamos al jugador el valor del parking
@@ -153,6 +154,17 @@ public class Casilla {
 
             return true; //Confirmamos que se pudo realizar la operacion
         }
+
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Carcel")) { //Comprobamos que la casilla en la que estamos es carcel
+
+            return true; //Confirmamos que no hay que hacer nada
+        }
+
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Salida")) { //Comprobamos que la casilla en la que estamos es salida
+
+            return true;
+        }
+
         return true;
     }
 
@@ -186,6 +198,15 @@ public class Casilla {
     /*Método para mostrar información sobre una casilla.
      * Devuelve una cadena con información específica de cada tipo de casilla.*/
     public String infoCasilla() {
+
+        if (tipo.equalsIgnoreCase("impuesto")) { //Comprobamos que la casilla es impuesto
+            return "{\n" +
+                    "tipo: impuesto,\n" +
+                    "a pagar: " + impuesto + "\n" +
+                    "}";
+        }
+
+        return ""; //devolvemos la informacion de impuesto
     }
 
     /* Método para mostrar información de una casilla en venta.
@@ -206,5 +227,24 @@ public class Casilla {
     }
     public Jugador getDuenho(){
         return this.duenho; //Devuelve que jugador es el dueño
+    }
+    public void setImpuesto(float impuesto) {
+        this.impuesto = impuesto;
+    } //Guarda en el atributo impuesto de esta casilla el valor que me han pasado como parámetro
+
+    public float getImpuesto() {
+        return this.impuesto; //Poder consultar desde el menu cuanto se ha pagado
+    }
+
+    public Grupo getGrupo() {
+        return this.grupo; //Devuelve el grupo al que pertenece
+    }
+
+    public void setgrupo(Grupo grupo){
+        this.grupo = grupo; //Asigna el grupo a la casilla
+    }
+
+    public String getTipo() {
+        return this.tipo; //Sirve para consultar desde otra clase qué tipo de casilla es
     }
 }
