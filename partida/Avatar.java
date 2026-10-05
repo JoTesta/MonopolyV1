@@ -106,4 +106,9 @@ public class Avatar {
             return this.nombre;
         }
     }
+
+    public String getId() {
+        return this.id;
+    }
+
 }
