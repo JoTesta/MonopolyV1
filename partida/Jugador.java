@@ -102,7 +102,7 @@ public class Jugador {
         if (!enCarcel){this.tiradasCarcel = 0;}
     }
 
-    void incrementarTiradasCarcel(){
+    public void incrementarTiradasCarcel(){
         this.tiradasCarcel++;
     }
 
@@ -164,7 +164,7 @@ public class Jugador {
     public void declararBancarrota(Jugador acreedor) {
         for (Casilla c : new ArrayList<>(propiedades)) {
             c.setDuenho(acreedor);
-            acreedor.anhadirPropiedad(c);
+            if (acreedor!=null) acreedor.anhadirPropiedad(c);
         }
         propiedades.clear();
         this.fortuna = 0;
