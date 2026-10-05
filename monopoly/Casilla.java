@@ -201,4 +201,10 @@ public class Casilla {
     public String getNombre() {
         return this.nombre;
     }
+    public void setDuenho(Jugador duenho){
+        this.duenho = duenho; //Establece que jugador es el dueño
+    }
+    public Jugador getDuenho(){
+        return this.duenho; //Devuelve que jugador es el dueño
+    }
 }
