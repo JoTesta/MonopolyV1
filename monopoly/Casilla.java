@@ -390,4 +390,8 @@ public class Casilla {
     public void setHipoteca(float hipoteca) { //metodo para asignar la hipoteca
         this.hipoteca = hipoteca;
     }
+
+    public ArrayList<Avatar> getAvatares() {
+        return this.avatares;
+    }
 }
