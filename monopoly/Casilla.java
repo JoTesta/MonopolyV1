@@ -84,13 +84,19 @@ public class Casilla {
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         if (tipo.equalsIgnoreCase("solar")) { //comprobamos que si la casilla en la que hemos caido es un solar
 
-            if (duenho != banca && duenho != actual) { //Comprobamos dos cosas, primero que si el dueño no es la banca, de ser asi comprobamos que si el dueño no es el jugador que ha caido en ella
+            if (duenho != banca && duenho != actual) {//Comprobamos dos cosas, primero que si el dueño no es la banca, de ser asi comprobamos que si el dueño no es el jugador que ha caido en ella
 
-                if (actual.getFortuna() >= impuesto) {  //Si el jugador tiene dinero para pagar el impuesto del solar
+                float alquiler = impuesto; //Creamos una variable llamada alquiler y le damos inicialmente el valor de impuesto, hacemos esto para que si el usuariotiene tienetodo el grupo no se cambie el valor de impuesto
 
-                    actual.sumarFortuna(-impuesto);  //Le restamos el dinero de dicho impuesto
-                    actual.sumarGastos(impuesto);    //Registramos dicha intervención
-                    duenho.sumarFortuna(impuesto);   //Le añadimos el valor del impuesto pagado al propietario del solar
+                if (grupo != null && grupo.esDuenhoGrupo(duenho)) { //comprobamos que esta casilla tiene un grupo asignado y que el propietario tienetodo el grupo
+                    alquiler = alquiler * 2; //el alquiler se multiplica por 2
+                }
+
+                if (actual.getFortuna() >= alquiler) {  //Si el jugador tiene dinero para pagar el alquiler del solar
+
+                    actual.sumarFortuna(-alquiler);  //Le restamos ealquiler al jugador
+                    actual.sumarGastos(alquiler);    //Registramos dicha intervención
+                    duenho.sumarFortuna(alquiler);   //Le añadimos el valor del alquiler pagado al propietario del solar
 
                     return true; //Confirmamos que el jugador pudo pagar su deuda
                 }
@@ -393,5 +399,8 @@ public class Casilla {
 
     public ArrayList<Avatar> getAvatares() {
         return this.avatares;
+    }
+    public float getValor() {
+        return this.valor;
     }
 }
