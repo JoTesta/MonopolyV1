@@ -104,6 +104,17 @@ public class Avatar {
         this.id = candidato;
     }
 
+    public String describir() {
+        return "{\n" +
+                "  id: " + this.id + ",\n" +
+                "  tipo: " + this.tipo + ",\n" +
+                "  casilla: " + (this.lugar != null ? this.lugar.getNombre() : "-") + ",\n" +
+                "  jugador: " + (this.jugador != null ? this.jugador.getNombre() : "-") + "\n" +
+                "}";
+    }
+
+
+
     //Getters y setters
     public String getId() {
         return this.id;
