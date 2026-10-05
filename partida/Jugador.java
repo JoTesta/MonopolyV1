@@ -140,6 +140,36 @@ public class Jugador {
         return this.propiedades;
     }
 
-    //Falta hacer la función para describir al jugador.
+    public String describir() {
+        String props = propiedades.isEmpty() ? "-" : nombresPropiedades();
+        return "{\n" +
+                "  nombre: " + nombre + ",\n" +
+                "  avatar: " + (avatar != null ? avatar.getId() : "-") + ",\n" +
+                "  fortuna: " + (long) fortuna + ",\n" +
+                "  propiedades: " + props + "\n" +
+                "  hipotecas: -\n" +
+                "  edificios: -\n" +
+                "}";
+    }
 
+    private String nombresPropiedades() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < propiedades.size(); i++) {
+            sb.append(propiedades.get(i).getNombre());
+            if (i < propiedades.size() - 1) sb.append(", ");
+        }
+        return sb.append("]").toString();
+    }
+
+    public void declararBancarrota(Jugador acreedor) {
+        for (Casilla c : new ArrayList<>(propiedades)) {
+            c.setDuenho(acreedor);
+            acreedor.anhadirPropiedad(c);
+        }
+        propiedades.clear();
+        this.fortuna = 0;
+        if (avatar != null && avatar.getLugar() != null) {
+            avatar.getLugar().eliminarAvatar(avatar);
+        }
+    }
 }
