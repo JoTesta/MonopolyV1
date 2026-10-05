@@ -54,6 +54,21 @@ public class Menu {
             System.out.println("Ya hay 4 jugadores registrados, no se pueden añadir más");
             return;
         }
+        for(Jugador j:jugadores){
+            if(j.getNombre().equalsIgnoreCase(nombre)){     //compara dos strings ignorando mayusculas y minusculas
+                System.out.println("Ya existe un jugador con este nombre");
+            }
+        }
+        String t = tipo.toLowerCase();                      //convierte tipo a minuscula
+        if (!t.equals("coche")|| t.equals("sombrero")||t.equals("esfinge")||t.equals("pelota"){
+            System.out.println("Tipo de avatar inválido (coche, esfinge, sombrero o pelota). ");
+        }
+        Casilla salida = tablero.encontrar_casilla("Salida");
+        Jugador nuevo = new Jugador(nombre, tipo,salida,avatares );
+        jugadores.add(nuevo);
+        System.out.println("{\n  nombre: " + nuevo.getNombre() +
+                ",\n  avatar: " + nuevo.getAvatar().getId() + "\n}");
+        System.out.println(tablero);
 
     }
     
