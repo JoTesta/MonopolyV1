@@ -59,4 +59,9 @@ public class Tablero {
 
         return null; //Si hemos recorrido todas las casilla y ninguna coincide retornamos null
     }
+
+    public ArrayList<ArrayList<Casilla>> getPosiciones() { //esto permite hacer desde menu tablero.getPosiciones()
+        return this.posiciones;
+    }
 }
+
