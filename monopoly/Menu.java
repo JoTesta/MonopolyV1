@@ -22,6 +22,8 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
+        this.dado1 = new Dado();
+        this.dado2 = new Dado();//Inicializamos los dados
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
@@ -50,6 +52,19 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
+        int valorDado1 = dado1.hacerTirada(); //llama a la función public int hacerTirada() que devuelve un numero aleatorio del 1 al 6
+        int valorDado2 = dado2.hacerTirada(); //hace lo mismo
+
+        int tirada = valorDado1 + valorDado2; // suma los dos valores y los guarda en tirada
+        Jugador actual = jugadores.get(turno); //Coge de la lista jugadores al jugador que tiene actualmente el turno.
+
+        actual.getAvatar().moverAvatar(tablero.getPosiciones(), tirada); //mueve el avatar de Pedro tantas posiciones como haya salido en los dados.
+
+        Casilla casillaActual = actual.getAvatar().getLugar(); // preguntamos después de moverlo en que casilla esta
+
+        if (casillaActual.getNombre().equalsIgnoreCase("IrCarcel")) { //comprobamos si la casilla en la que acaba de caer es ir a carcel
+            actual.encarcelar(tablero.getPosiciones()); //llamamos a la función que ya hay hecha en jugador que se encarga de encarcelar al jugador
+        }
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
