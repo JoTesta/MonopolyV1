@@ -1,6 +1,9 @@
 package monopoly;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Scanner;
+
 import partida.*;
 
 
@@ -19,17 +22,82 @@ public class Menu {
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
 
+    public menu(){
+        iniciarPartida();
+        Scanner sc = new Scanner(System.in);
+        while (true){
+            System.out.print("$> ");
+            if (!sc.hasNextLine()) break;
+            String linea = sc.nextLine().trim();
+            if (linea.isEmpty()) continue;
+            if (linea.equalsIgnoreCase("salir")) break;
+            analizarComando(linea);
+        }
+    }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
         this.dado1 = new Dado();
         this.dado2 = new Dado();//Inicializamos los dados
+        this.jugadores = new ArrayList<>();
+        this.avatares = new ArrayList<>();
+        this.banca = new Jugador();
+        this.tablero = new Tablero();
+        this.turno = 0;
+        this.lanzamientos = 0;
+        this.tirado = false;
+        this.solvente = true;
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
     private void analizarComando(String comando) {
+        String[] p = comando.trim().split("\\s+");      //quita los espacios innecesarios y hae un vector con cada palabra
+        switch(p[0].toLowerCase()){
+            case "crear":
+                if (p.length == 4 && p[1].equalsIgnoreCase("jugador")) crearJugador(p[2], p[3]);
+                else System.out.println("Sintaxis: crear jugador <nombre> <tipo>");
+                break;
+
+            case "jugador":
+                if (p.length == 1) mostrarJugadorActual();
+                else System.out.println("Comando no válido.");
+                break;
+
+            case "listar":
+                if (p.length < 2) { System.out.println("Uso: listar jugadores|avatares|enventa"); break; }
+                if (p[1].equalsIgnoreCase("jugadores")) listarJugadores();
+                else if (p[1].equalsIgnoreCase("avatares")) listarAvatares();
+                else if (p[1].equalsIgnoreCase("enventa")) listarVenta();
+                else System.out.println("Comando no válido.");
+                break;
+
+            case "acabar":
+                acabarTurno();
+                break;
+
+            case "ver":
+                System.out.println(tablero);
+                break;
+
+            case "lanzar": //Hacer más adelante
+                break;
+
+            case "describir": //más adelante
+                descJugador(p);
+                break;
+
+            case "comprar":
+                if (p.length == 2) comprar(p[1]);
+                break;
+
+            case "salir":
+                salirCarcel();
+                break;
+
+            default: System.out.println("Comando no válido");
+        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -67,9 +135,16 @@ public class Menu {
             actual.encarcelar(tablero.getPosiciones());
         }
         else{
-            solvente = casillaActual.evaluarCasilla(actual, banca, tirada);
-        } //Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
-    }
+            solvente = casillaActual.evaluarCasilla(actual, banca, tirada);//Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
+            if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")){
+                Casilla parking = tablero.encontrar_casilla("Parking");
+                if (parking != null){
+                    parking.sumarValor(casillaActual.getImpuesto());
+                }
+            }
+        }
+
+        }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
     * Parámetro: cadena de caracteres con el nombre de la casilla.
