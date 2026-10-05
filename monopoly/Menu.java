@@ -183,6 +183,20 @@ public class Menu {
     private void listarVenta() {
     }
 
+    //metodo privado para mostrar el jugador actual
+    private void mostrarJugadorActual(){
+        if (jugadores.isEmpty()) {
+            System.out.println("No hay jugadores");
+            return;
+        }
+        Jugador j = jugadores.get(turno);
+        System.out.println("{\n  nombre: " + j.getNombre() +
+                ",\n  avatar: " + j.getAvatar().getId() + "\n}");
+    }
+    }
+
+
+
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
     }
