@@ -104,7 +104,7 @@ public class Casilla {
 
             if (duenho != banca && duenho != actual) { //Si el dueño es distinto de la banca o distinto del jugador
 
-                float alquiler = 4 * tirada * 50000;  //El alquiler se multiplica por 4 y por la tirada del jugador
+                float alquiler = 4 * tirada * Valor.FACTOR_SERVICIOS;  //El alquiler se multiplica por 4 y por la tirada del jugador
 
                 if (actual.getFortuna() >= alquiler) { //Si la fortuna del jugador es mayor que el dinero que tiene que pagar de alquiler
 
@@ -385,5 +385,9 @@ public class Casilla {
         this.alquilerHotel = alquilerHotel;
         this.alquilerPiscina = alquilerPiscina;
         this.alquilerPistaDeporte = alquilerPistaDeporte;
+    }
+
+    public void setHipoteca(float hipoteca) { //metodo para asignar la hipoteca
+        this.hipoteca = hipoteca;
     }
 }
