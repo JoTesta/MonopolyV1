@@ -47,5 +47,16 @@ public class Tablero {
     
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
+        for (ArrayList<Casilla> lado : posiciones) {//Recorremos las posiciones de cada lado
+
+            for (Casilla casilla : lado) { // Recorremos casilla a casilla del ado actual
+
+                if (casilla.getNombre().equalsIgnoreCase(nombre)) { //Comparamos el nombre de la casilla que estamos mirando con el nombre de la casilla que estamos buscando
+                    return casilla; //devolvemos la casilla si coinciden
+                }
+            }
+        }
+
+        return null; //Si hemos recorrido todas las casilla y ninguna coincide retornamos null
     }
 }

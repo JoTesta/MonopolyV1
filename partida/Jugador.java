@@ -82,9 +82,19 @@ public class Jugador {
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+        this.enCarcel = true;
+        this.tiradasCarcel = 0;
+        Casilla carcel = pos.get(1).get(0);
+
+        if (this.avatar!=null){
+            if (this.avatar.getLugar()!=null){
+                this.avatar.getLugar().eliminarAvatar(this.avatar);
+            }
+            this.avatar.setLugar(carcel);
+            carcel.anhadirAvatar(this.avatar);
+        }
 
     }
-
 
     //metodo para poner enCarcel a cualquier valor
     public void setEnCarcel(boolean enCarcel){
@@ -92,8 +102,44 @@ public class Jugador {
         if (!enCarcel){this.tiradasCarcel = 0;}
     }
 
+    void incrementarTiradasCarcel(){
+        this.tiradasCarcel++;
+    }
 
+
+    //getters fundamentales.
     public String getNombre(){
         return this.nombre;
     }
+
+    public Avatar getAvatar() {
+        return this.avatar;
+    }
+
+    public float getFortuna() {
+        return this.fortuna;
+    }
+
+    public float getGastos() {
+        return this.gastos;
+    }
+
+    public boolean isEnCarcel() {
+        return this.enCarcel;
+    }
+
+    public int getTiradasCarcel() {
+        return this.tiradasCarcel;
+    }
+
+    public int getVueltas() {
+        return this.vueltas;
+    }
+
+    public ArrayList<Casilla> getPropiedades() {
+        return this.propiedades;
+    }
+
+    //Falta hacer la función para describir al jugador.
+
 }
