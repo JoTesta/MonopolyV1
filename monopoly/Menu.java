@@ -67,16 +67,8 @@ public class Menu {
             actual.encarcelar(tablero.getPosiciones());
         }
         else{
-            solvente = casillaActual.evaluarCasilla(actual, banca, tirada); //Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
-            if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")) { //Comprobamos que la casilla en la que se callo es de impuestos y que si se pudo pagar la deuda
-
-                Casilla parking = tablero.encontrar_casilla("Parking"); //Buscamos en todo el tablero la casilla llamada parking
-
-                if (parking != null) { //Si parking existe y lo hemos encontrado
-                    parking.sumarValor(casillaActual.getImpuesto()); //Le sumamos el impuesto que acabamos de pagar
-                }
-            }
-        }
+            solvente = casillaActual.evaluarCasilla(actual, banca, tirada);
+        } //Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
