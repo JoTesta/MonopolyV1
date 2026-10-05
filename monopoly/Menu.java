@@ -48,6 +48,14 @@ public class Menu {
         this.tirado = false;
         this.solvente = true;
     }
+
+    private void crearJugador(String nombre, String tipo){
+        if (jugadores.size()>4){
+            System.out.println("Ya hay 4 jugadores registrados, no se pueden añadir más");
+            return;
+        }
+
+    }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
