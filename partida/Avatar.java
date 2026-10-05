@@ -32,15 +32,15 @@ public class Avatar {
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
         int posicionActual = this.lugar.getPosicion();
-        int nuevaPosicion = (posicionActual + valorTirada) % 40;
+        int nuevaPosicion = (posicionActual + valorTirada) % 40 + 1;
         boolean pasaPorSalida = nuevaPosicion < posicionActual;
 
         if (pasaPorSalida){
-            this.jugador.sumarFortuna(2000000);
-            System.out.println("El jugador "+ this.jugador.getNombre() + " pasa por la salida y recibe 2.000.000€  ");
+            this.jugador.sumarFortuna(Valor.SUMA_VUELTA);
+            this.jugador.sumarVueltas();
+            System.out.println("El jugador " + this.jugador.getNombre() + " pasa por la Salida y recibe 2.000.000€.");
         }
 
-        this.lugar.eliminarAvatar(this);
 
         Casilla nuevaCasilla = null;
         for (ArrayList<Casilla> lado : casillas){
@@ -55,10 +55,13 @@ public class Avatar {
         }
 
         if (nuevaCasilla != null){
+            this.lugar.eliminarAvatar(this);
             this.lugar = nuevaCasilla;
             this.lugar.anhadirAvatar(this);
 
-            if (this.lugar.getNombre().equalsIgnoreCase("IrCarcel")) {}
+            if (this.lugar.getNombre().equalsIgnoreCase("IrCarcel")) {
+                this.jugador.encarcelar(casillas);
+            }
         }
 
 
