@@ -65,6 +65,9 @@ public class Menu {
         if (casillaActual.getNombre().equalsIgnoreCase("IrCarcel")) { //comprobamos si la casilla en la que acaba de caer es ir a carcel
             actual.encarcelar(tablero.getPosiciones()); //llamamos a la función que ya hay hecha en jugador que se encarga de encarcelar al jugador
         }
+        else{
+            solvente = casillaActual.evaluarCasilla(actual, banca, tirada);
+        } //Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.

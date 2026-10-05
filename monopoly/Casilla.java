@@ -3,7 +3,7 @@ package monopoly;
 import partida.*;
 import java.util.ArrayList;
 
-public class Casilla() {
+public class Casilla {
 
     //Atributos:
     private String nombre; //Nombre de la casilla
@@ -134,7 +134,7 @@ public class Casilla() {
             return true; //Por ahora no hacemos nada ya que es la primera entrega
         }
 
-        if (tipo.equalsIgnoreCase("Impuestos")){ //Comprobamos que en la casilla que hemos caido es la de impuestos
+        if (tipo.equalsIgnoreCase("impuesto")){ //Comprobamos que en la casilla que hemos caido es la de impuestos
 
             if (actual.getFortuna() >= impuesto){ //Comprobamos que el jugador tiene dinero suficiente para pagar el impuesto
 
@@ -146,6 +146,14 @@ public class Casilla() {
 
             return false; //Confirmamos que el jugador no pudo pagar el impuesto
         }
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) { //Comprobamos que la casilla en la que hemos caido es la de parking
+
+            actual.sumarFortuna(valor); //Le sumamos al jugador el valor del parking
+            valor = 0; //Reiniciamos el valor del parking
+
+            return true; //Confirmamos que se pudo realizar la operacion
+        }
+        return true;
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
