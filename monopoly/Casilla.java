@@ -14,6 +14,15 @@ public class Casilla {
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float hipoteca; //Valor otorgado por hipotecar una casilla
+    private float valorCasa; //Valor de la casa
+    private float valorHotel; //Valor de un hotel
+    private float valorPiscina; //Valor de piscina
+    private float valorPistaDeporte; //Valor pista de deportes
+
+    private float alquilerCasa; //Alquiler de la casa
+    private float alquilerHotel; //Alquiler del hotel
+    private float alquilerPiscina; //Alquiler de la piscina
+    private float alquilerPistaDeporte; //Alquiler de la pista de deportes
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
     //Constructores:
@@ -95,7 +104,7 @@ public class Casilla {
 
             if (duenho != banca && duenho != actual) { //Si el dueño es distinto de la banca o distinto del jugador
 
-                float alquiler = 4 * tirada * 50000;  //El alquiler se multiplica por 4 y por la tirada del jugador
+                float alquiler = 4 * tirada * Valor.FACTOR_SERVICIOS;  //El alquiler se multiplica por 4 y por la tirada del jugador
 
                 if (actual.getFortuna() >= alquiler) { //Si la fortuna del jugador es mayor que el dinero que tiene que pagar de alquiler
 
@@ -206,14 +215,131 @@ public class Casilla {
                     "}";
         }
 
-        return ""; //devolvemos la informacion de impuesto
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) { //Comprobamos que la casilla es parking
+
+            String jugadoresParking = ""; //Creamos una cadena vacia donde guardaremos los nombres de los jugadores que esten en parking
+
+            for (Avatar av : avatares) { //Recorremos todos los avatares que esten situados en esta casilla
+
+                if (!jugadoresParking.isEmpty()) { //Si la cadena de jugadores no esta vacia
+                    jugadoresParking += ", "; //Añadimos una coma y un espacio antes de añadir otro jugador
+                }
+
+                jugadoresParking += av.getJugador().getNombre(); //Obtenemos el nombre del jugador al que pertenece ese avatar
+            }
+
+            return "{\n" +
+                    "bote: " + valor + ",\n" +
+                    "jugadores: [" + jugadoresParking + "]\n" +
+                    "}";
+        }
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Carcel")) { //Comprobamos que la casilla es carcel
+
+            String jugadoresCarcel = ""; //Creamos una cadena vacia donde guardaremos los nombres de los jugadores que esten en la carcel
+
+            for (Avatar av : avatares) { //Recorremos todos los avatares que esten situados en esta casilla
+
+                Jugador jugador = av.getJugador(); //Cogemos el jugador propietario del avatar y lo guardamos en una variable llamada jugador
+
+                if (!jugadoresCarcel.isEmpty()) { //Si la cadena de jugadores no esta vacia
+                    jugadoresCarcel += " "; //Ponemos un espacio antes del siguiente
+                }
+
+                jugadoresCarcel += "[" +
+                        jugador.getNombre() + "," +
+                        jugador.getTiradasCarcel() + "]";
+            }
+
+            return "{\n" +
+                    "salir: " + Valor.SALIR_CARCEL + ",\n" +
+                    "jugadores: " + jugadoresCarcel + "\n" +
+                    "}";
+        }
+
+        if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Salida")) { //Comprobamos que la casilla es Salida
+
+            return "{\n" +
+                    "tipo: especial,\n" +
+                    "cantidad por vuelta: " + Valor.SUMA_VUELTA + "\n" +
+                    "}";
+        }
+
+        if (tipo.equalsIgnoreCase("transporte")) { //Comprobamos que la casilla es transporte
+
+            return "{\n" +
+                    "tipo: transporte,\n" +
+                    "propietario: " + duenho.getNombre() + ",\n" +
+                    "valor: " + valor + ",\n" +
+                    "alquiler: 250000\n" +
+                    "}";
+        }
+
+        if (tipo.equalsIgnoreCase("servicio")) { //Comprobamos que la casilla es servicio
+
+            return "{\n" +
+                    "tipo: servicio,\n" +
+                    "propietario: " + duenho.getNombre() + ",\n" +
+                    "valor: " + valor + ",\n" +
+                    "factor servicio: " + Valor.FACTOR_SERVICIOS + "\n" +
+                    "}";
+        }
+
+        if (tipo.equalsIgnoreCase("solar")) { //Comprobamos que la casilla es un solar
+
+            return "{\n" +
+                    "tipo: solar,\n" +
+                    "grupo: " + grupo.getColorGrupo() + ",\n" +
+                    "propietario: " + duenho.getNombre() + ",\n" +
+                    "valor: " + valor + ",\n" +
+                    "alquiler: " + impuesto + ",\n" +
+                    "hipoteca: " + hipoteca + ",\n" +
+                    "valor hotel: " + valorHotel + ",\n" +
+                    "valor casa: " + valorCasa + ",\n" +
+                    "valor piscina: " + valorPiscina + ",\n" +
+                    "valor pista de deporte: " + valorPistaDeporte + ",\n" +
+                    "alquiler casa: " + alquilerCasa + ",\n" +
+                    "alquiler hotel: " + alquilerHotel + ",\n" +
+                    "alquiler piscina: " + alquilerPiscina + ",\n" +
+                    "alquiler pista de deporte: " + alquilerPistaDeporte + "\n" +
+                    "}";
+        }
+
+        // SUERTE, COMUNIDAD e IrCarcel no se describen
+        return "";
     }
+
+
 
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
-    public String casEnVenta() {
+    public String casEnVenta() { //funcion para devolver un texto corto con la información necesaria para mostrar una propiedad que está en venta.
+        if (tipo.equalsIgnoreCase("solar")) { //Si la casilla es un solar
+                return "{\n" +
+                        "tipo: solar,\n" +
+                        "grupo: " + grupo.getColorGrupo() + ",\n" +
+                        "valor: " + valor + "\n" +
+                        "}";
+        }
+
+        if (tipo.equalsIgnoreCase("transporte")) { //Si la casilla es un trasnporte
+                return "{\n" +
+                        "tipo: transporte,\n" +
+                        "valor: " + valor + "\n" +
+                        "}";
+        }
+
+        if (tipo.equalsIgnoreCase("servicio")) { //Si la casilla es un servicio
+                return "{\n" +
+                        "tipo: servicio,\n" +
+                        "valor: " + valor + "\n" +
+                        "}";
+        }
+
+            return "";
     }
+
+
 
     public int getPosicion() {
         return this.posicion;
@@ -240,11 +366,28 @@ public class Casilla {
         return this.grupo; //Devuelve el grupo al que pertenece
     }
 
-    public void setgrupo(Grupo grupo){
+    public void setGrupo(Grupo grupo){
         this.grupo = grupo; //Asigna el grupo a la casilla
     }
 
     public String getTipo() {
         return this.tipo; //Sirve para consultar desde otra clase qué tipo de casilla es
+    }
+
+    public void setValoresEdificacion(float valorCasa, float valorHotel, float valorPiscina, float valorPistaDeporte, float alquilerCasa, float alquilerHotel, float alquilerPiscina, float alquilerPistaDeporte) { //Función para guardar de golpe todos los precios y alquileres relacionados con las edificaciones de un solar.
+
+        this.valorCasa = valorCasa;
+        this.valorHotel = valorHotel;
+        this.valorPiscina = valorPiscina;
+        this.valorPistaDeporte = valorPistaDeporte;
+
+        this.alquilerCasa = alquilerCasa;
+        this.alquilerHotel = alquilerHotel;
+        this.alquilerPiscina = alquilerPiscina;
+        this.alquilerPistaDeporte = alquilerPistaDeporte;
+    }
+
+    public void setHipoteca(float hipoteca) { //metodo para asignar la hipoteca
+        this.hipoteca = hipoteca;
     }
 }
