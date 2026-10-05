@@ -97,9 +97,21 @@ class Grupo {
         return true;
     }
 
-    //Metodo que obtiene el color de un grupo (getter)
+    //Getters y setters
     public String getColorGrupo(){
         return this.colorGrupo;
+    }
+
+    public ArrayList<Casilla> getMiembros() {
+        return this.miembros;
+    }
+
+    public int getNumCasillas() {
+        return this.numCasillas;
+    }
+
+    public void setColorGrupo(String colorGrupo) {
+        this.colorGrupo = colorGrupo;
     }
 
 }
