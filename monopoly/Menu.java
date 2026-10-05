@@ -63,8 +63,8 @@ public class Menu {
         Casilla casillaActual = actual.getAvatar().getLugar(); // preguntamos después de moverlo en que casilla esta
 
         actual.getAvatar().moverAvatar(tablero.getPosiciones(), tirada);
-        if (!actual.isEnCarcel()) {
-            solvente = actual.getAvatar().getLugar().evaluarCasilla(actual, banca, tirada);
+        if (casillaActual.getNombre().equalsIgnoreCase("IrCarcel")) {
+            actual.encarcelar(tablero.getPosiciones());
         }
         else{
             solvente = casillaActual.evaluarCasilla(actual, banca, tirada);
