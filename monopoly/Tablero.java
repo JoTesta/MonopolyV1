@@ -105,41 +105,70 @@ public class Tablero {
     //Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
-        ArrayList<Casilla> sur = posiciones.get(0);
-        ArrayList<Casilla> oeste = posiciones.get(1);
-        ArrayList<Casilla> norte = posiciones.get(2);
-        ArrayList<Casilla> este = posiciones.get(3);
+        //1. Calculamos el ancho de casilla: el texto más largo (nombre + avatares) de todo el tablero
+        int ancho = 0;
+        for (ArrayList<Casilla> lado : posiciones) {
+            for (Casilla c : lado) {
+                ancho = Math.max(ancho, textoCasilla(c).length());
+            }
+        }
 
         StringBuilder sb = new StringBuilder();
-        int anchoTotal = 11 * (ANCHO + 1) + 1; //11 casillas de (| + ANCHO) más la | final
+        int anchoFila = 11 * (ancho + 1) + 1;          //11 casillas de (ancho + '|') + el '|' final
+        String hueco = " ".repeat(9 * (ancho + 1) - 1); //espacio vacío del centro del tablero
 
-        //Línea superior
-        sb.append("_".repeat(anchoTotal)).append("\n");
+        //2. Línea superior
+        sb.append("_".repeat(anchoFila)).append("\n");
 
-        //Fila de arriba: Parking ... Solar17 + IrCarcel
-        for (Casilla c : norte) {
-            sb.append(celda(c));
-        }
-        sb.append(celda(este.get(0))).append("|\n");
-
-        //9 filas del medio: oeste (bajando) a la izquierda, este a la derecha
-        for (int i = 0; i < 9; i++) {
-            sb.append(celda(oeste.get(9 - i)));                 //Solar11, Solar10, ..., Solar6
-            sb.append("|").append(" ".repeat(9 * (ANCHO + 1) - 1)); //Hueco central
-            sb.append(celda(este.get(1 + i))).append("|\n");   //Solar18, Solar19, ..., Solar22
-        }
-
-        //Fila de abajo: Carcel + Solar5 ... Salida (al revés)
-        sb.append(celda(oeste.get(0)));
-        for (int i = 9; i >= 0; i--) {
-            sb.append(celda(sur.get(i)));
+        //3. Fila de arriba (lado norte + IrCarcel): posiciones 21 a 31
+        for (int pos = 21; pos <= 31; pos++) {
+            sb.append(pintarCasilla(obtenerCasilla(pos), ancho));
         }
         sb.append("|\n");
 
-        //Línea inferior
-        sb.append("_".repeat(anchoTotal)).append("\n");
+        //4. Filas centrales: izquierda lado oeste (20 -> 12), derecha lado este (32 -> 40)
+        for (int i = 0; i < 9; i++) {
+            sb.append(pintarCasilla(obtenerCasilla(20 - i), ancho)).append("|");
+            if (i == 8) {
+                sb.append("_".repeat(hueco.length())); //cerramos el cuadrado interior
+            } else {
+                sb.append(hueco);
+            }
+            sb.append(pintarCasilla(obtenerCasilla(32 + i), ancho)).append("|\n");
+        }
+
+        //5. Fila de abajo (Cárcel + lado sur): posiciones 11 a 1
+        for (int pos = 11; pos >= 1; pos--) {
+            sb.append(pintarCasilla(obtenerCasilla(pos), ancho));
+        }
+        sb.append("|\n");
 
         return sb.toString();
+    }
+
+    //Texto "plano" de una casilla (sin colores): nombre + avatares, p.ej. "Solar9 &H&J".
+    private String textoCasilla(Casilla c) {
+        StringBuilder texto = new StringBuilder(c.getNombre());
+        if (!c.getAvatares().isEmpty()) {
+            texto.append(" ");
+            for (Avatar av : c.getAvatares()) {
+                texto.append("&").append(av.getId());
+            }
+        }
+        return texto.toString();
+    }
+
+    //Devuelve "|" + la casilla rellenada con espacios hasta 'ancho', con el nombre coloreado si es solar.
+    private String pintarCasilla(Casilla c, int ancho) {
+        String texto = textoCasilla(c);
+        String espacios = " ".repeat(ancho - texto.length()); //el relleno se calcula SIN los códigos de color
+        String nombre = c.getNombre();
+        String resto = texto.substring(nombre.length());       //la parte de los avatares
+
+        if (c.getGrupo() != null) {
+            nombre = c.getGrupo().getColorGrupo() + nombre + Valor.RESET;
+        }
+        return "|" + nombre + resto + espacios;
     }
 
     //Método usado para buscar la casilla con el nombre pasado como argumento:
