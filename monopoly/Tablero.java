@@ -105,7 +105,41 @@ public class Tablero {
     //Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
-        return "";
+        ArrayList<Casilla> sur = posiciones.get(0);
+        ArrayList<Casilla> oeste = posiciones.get(1);
+        ArrayList<Casilla> norte = posiciones.get(2);
+        ArrayList<Casilla> este = posiciones.get(3);
+
+        StringBuilder sb = new StringBuilder();
+        int anchoTotal = 11 * (ANCHO + 1) + 1; //11 casillas de (| + ANCHO) más la | final
+
+        //Línea superior
+        sb.append("_".repeat(anchoTotal)).append("\n");
+
+        //Fila de arriba: Parking ... Solar17 + IrCarcel
+        for (Casilla c : norte) {
+            sb.append(celda(c));
+        }
+        sb.append(celda(este.get(0))).append("|\n");
+
+        //9 filas del medio: oeste (bajando) a la izquierda, este a la derecha
+        for (int i = 0; i < 9; i++) {
+            sb.append(celda(oeste.get(9 - i)));                 //Solar11, Solar10, ..., Solar6
+            sb.append("|").append(" ".repeat(9 * (ANCHO + 1) - 1)); //Hueco central
+            sb.append(celda(este.get(1 + i))).append("|\n");   //Solar18, Solar19, ..., Solar22
+        }
+
+        //Fila de abajo: Carcel + Solar5 ... Salida (al revés)
+        sb.append(celda(oeste.get(0)));
+        for (int i = 9; i >= 0; i--) {
+            sb.append(celda(sur.get(i)));
+        }
+        sb.append("|\n");
+
+        //Línea inferior
+        sb.append("_".repeat(anchoTotal)).append("\n");
+
+        return sb.toString();
     }
 
     //Método usado para buscar la casilla con el nombre pasado como argumento:

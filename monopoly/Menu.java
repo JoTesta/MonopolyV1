@@ -22,10 +22,10 @@ public class Menu {
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
 
-    public menu(){
+    public Menu() {
         iniciarPartida();
         Scanner sc = new Scanner(System.in);
-        while (true){
+        while (true) {
             System.out.print("$> ");
             if (!sc.hasNextLine()) break;
             String linea = sc.nextLine().trim();
@@ -42,42 +42,44 @@ public class Menu {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
         this.banca = new Jugador();
-        this.tablero = new Tablero();
+        this.tablero = new Tablero(banca);
         this.turno = 0;
         this.lanzamientos = 0;
         this.tirado = false;
         this.solvente = true;
     }
 
-    private void crearJugador(String nombre, String tipo){
-        if (jugadores.size()>4){
+    private void crearJugador(String nombre, String tipo) {
+        if (jugadores.size() >= 4) {
             System.out.println("Ya hay 4 jugadores registrados, no se pueden añadir más");
             return;
         }
-        for(Jugador j:jugadores){
-            if(j.getNombre().equalsIgnoreCase(nombre)){     //compara dos strings ignorando mayusculas y minusculas
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equalsIgnoreCase(nombre)) {     //compara dos strings ignorando mayusculas y minusculas
                 System.out.println("Ya existe un jugador con este nombre");
+                return;
             }
         }
         String t = tipo.toLowerCase();                      //convierte tipo a minuscula
-        if (!t.equals("coche")|| t.equals("sombrero")||t.equals("esfinge")||t.equals("pelota"){
+        if (!t.equals("coche") && !t.equals("sombrero") && !t.equals("esfinge") && !t.equals("pelota")) {
             System.out.println("Tipo de avatar inválido (coche, esfinge, sombrero o pelota). ");
+            return;
         }
         Casilla salida = tablero.encontrar_casilla("Salida");
-        Jugador nuevo = new Jugador(nombre, tipo,salida,avatares );
+        Jugador nuevo = new Jugador(nombre, tipo, salida, avatares);
         jugadores.add(nuevo);
         System.out.println("{\n  nombre: " + nuevo.getNombre() +
                 ",\n  avatar: " + nuevo.getAvatar().getId() + "\n}");
         System.out.println(tablero);
 
     }
-    
+
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
-    * Parámetro: cadena de caracteres (el comando).
-    */
+     * Parámetro: cadena de caracteres (el comando).
+     */
     private void analizarComando(String comando) {
         String[] p = comando.trim().split("\\s+");      //quita los espacios innecesarios y hae un vector con cada palabra
-        switch(p[0].toLowerCase()){
+        switch (p[0].toLowerCase()) {
             case "crear":
                 if (p.length == 4 && p[1].equalsIgnoreCase("jugador")) crearJugador(p[2], p[3]);
                 else System.out.println("Sintaxis: crear jugador <nombre> <tipo>");
@@ -89,7 +91,10 @@ public class Menu {
                 break;
 
             case "listar":
-                if (p.length < 2) { System.out.println("Uso: listar jugadores|avatares|enventa"); break; }
+                if (p.length < 2) {
+                    System.out.println("Uso: listar jugadores|avatares|enventa");
+                    break;
+                }
                 if (p[1].equalsIgnoreCase("jugadores")) listarJugadores();
                 else if (p[1].equalsIgnoreCase("avatares")) listarAvatares();
                 else if (p[1].equalsIgnoreCase("enventa")) listarVenta();
@@ -97,54 +102,113 @@ public class Menu {
                 break;
 
             case "acabar":
-                acabarTurno();
+                if (p.length == 2 && p[1].equalsIgnoreCase("turno")) {
+                    acabarTurno();
+                } else System.out.println("Sintaxis: Acabar turno");
+
                 break;
 
             case "ver":
                 System.out.println(tablero);
                 break;
 
-            case "lanzar": //Hacer más adelante
+            case "lanzar":
+                if (p.length == 2 && p[1].equalsIgnoreCase("dados")) {
+                    lanzarDados(0, 0);
+                    // tirada aleatoria
+                } else if (p.length == 3 && p[1].equalsIgnoreCase("dados")) {
+                    try {
+                        String[] d = p[2].split("\\+");// separamos el texto por el +, y el try por si semete a+b || 5 || 9+12
+                        int dado1Valor = Integer.parseInt(d[0]);
+                        int dado2Valor = Integer.parseInt(d[1]);
+                        if (dado1Valor < 1 || dado1Valor > 6 || dado2Valor < 1 || dado2Valor > 6) {
+                            System.out.println("Los dados son de 1 a 6, por ejemplo 2+6");
+                        } else lanzarDados(dado1Valor, dado2Valor);
+                        // tirada forzada
+                    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                        // qué hacer SI falla (en vez de cerrar el programa)
+                        System.out.println("Los dados son de 1 a 6, por ejemplo 2+6");
+                    }
+                } else {
+                    System.out.println("Sintaxis: lanzar dados || lanzar dados X+Y");
+                }
                 break;
 
-            case "describir": //más adelante
-                descJugador(p);
+            case "describir":
+                if ((p.length == 3) && p[1].equalsIgnoreCase("jugador")) {
+                    descJugador(p);
+                } else if ((p.length == 3) && p[1].equalsIgnoreCase("avatar")) {
+                    descAvatar(p[2]);
+                } else if ((p.length == 3) && p[1].equalsIgnoreCase("casilla")) {
+                    descCasilla(p[2]);
+                } else if ((p.length == 2)) {
+                    descCasilla(p[1]);
+                } else
+                    System.out.println("Sintaxis: describir <casilla> | describir jugador <nombre> | describir avatar <id>");
+
                 break;
 
             case "comprar":
-                if (p.length == 2) comprar(p[1]);
+                if ((p.length == 2)) {
+                    comprar(p[1]);
+                } else {
+                    System.out.println("Sintaxis: comprar nombre_casilla");
+                }
                 break;
 
             case "salir":
-                salirCarcel();
+                if (p.length == 2 && (p[1].equalsIgnoreCase("cárcel") || p[1].equalsIgnoreCase("carcel"))) {
+                    salirCarcel();
+                } else {
+                    System.out.println("Sintaxis: salir carcel");
+                }
                 break;
 
-            default: System.out.println("Comando no válido");
+            case "comandos":
+                if (p.length == 2) {
+                    ejecutarFichero(p[1]);
+
+                } else {
+                    System.out.println("Sintaxis: comandos <fichero>");
+                }
+                break;
+
+            default:
+                System.out.println("Comando no válido");
         }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
-    * Parámetro: comando introducido
+     * Parámetro: comando introducido
      */
     private void descJugador(String[] partes) {
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
-    * Parámetro: id del avatar a describir.
-    */
+     * Parámetro: id del avatar a describir.
+     */
     private void descAvatar(String ID) {
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
-    * Parámetros: nombre de la casilla a describir.
-    */
+     * Parámetros: nombre de la casilla a describir.
+     */
     private void descCasilla(String nombre) {
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
-    private void lanzarDados() {
-        int valorDado1 = dado1.hacerTirada(); //llama a la función public int hacerTirada() que devuelve un numero aleatorio del 1 al 6
-        int valorDado2 = dado2.hacerTirada(); //hace lo mismo
+    private void lanzarDados(int d1, int d2) {
+
+        int valorDado1;
+        int valorDado2;
+
+        if (d1 == 0 && d2 == 0) {
+            valorDado1 = dado1.hacerTirada(); //llama a la función public int hacerTirada() que devuelve un numero aleatorio del 1 al 6
+            valorDado2 = dado2.hacerTirada(); //hace lo mismo
+        } else {
+            valorDado1 = d1;
+            valorDado2 = d2;
+        }
 
         int tirada = valorDado1 + valorDado2; // suma los dos valores y los guarda en tirada
         Jugador actual = jugadores.get(turno); //Coge de la lista jugadores al jugador que tiene actualmente el turno.
@@ -156,26 +220,25 @@ public class Menu {
         actual.getAvatar().moverAvatar(tablero.getPosiciones(), tirada);
         if (casillaActual.getNombre().equalsIgnoreCase("IrCarcel")) {
             actual.encarcelar(tablero.getPosiciones());
-        }
-        else{
+        } else {
             solvente = casillaActual.evaluarCasilla(actual, banca, tirada);//Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
-            if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")){
+            if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")) {
                 Casilla parking = tablero.encontrar_casilla("Parking");
-                if (parking != null){
+                if (parking != null) {
                     parking.sumarValor(casillaActual.getImpuesto());
                 }
             }
         }
 
-        }
+    }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
-    * Parámetro: cadena de caracteres con el nombre de la casilla.
+     * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
     }
 
-    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
+    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
     private void salirCarcel() {
     }
 
@@ -184,7 +247,7 @@ public class Menu {
     }
 
     //metodo privado para mostrar el jugador actual
-    private void mostrarJugadorActual(){
+    private void mostrarJugadorActual() {
         if (jugadores.isEmpty()) {
             System.out.println("No hay jugadores");
             return;
@@ -193,12 +256,14 @@ public class Menu {
         System.out.println("{\n  nombre: " + j.getNombre() +
                 ",\n  avatar: " + j.getAvatar().getId() + "\n}");
     }
-    }
-
 
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
+        for (Jugador j: jugadores){
+            System.out.println(j.describir());
+        }
+
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
@@ -208,5 +273,11 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
     }
-    //
+//
+
+
+    //Metodo para leer y ejecutar comandos desde un .txt
+    private void ejecutarFichero(String fichero) {
+
+    }
 }
