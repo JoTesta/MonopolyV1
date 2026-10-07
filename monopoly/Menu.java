@@ -272,6 +272,14 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()) {
+            for (Casilla c : lado) {
+                if (c.getDuenho() == banca && !(c.casEnVenta().isEmpty()) ){
+                    System.out.println(c.casEnVenta());
+                }
+            }
+        }
+
     }
 
     //metodo privado para mostrar el jugador actual
