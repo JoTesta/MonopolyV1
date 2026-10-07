@@ -9,8 +9,8 @@ import partida.*;
 
 
 public class Menu {
-
     //Atributos
+
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
     private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
@@ -182,18 +182,46 @@ public class Menu {
      * Parámetro: comando introducido
      */
     private void descJugador(String[] partes) {
+        for (Jugador j : jugadores) {
+            if(j.getNombre().equalsIgnoreCase(partes[2])) {
+                System.out.println(j.describir());
+                return;
+            }
+
+        }
+        System.out.println("No existe el jugador " + partes[2]);
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
     private void descAvatar(String ID) {
+        for (Avatar a : avatares) {
+            if(a.getId().equalsIgnoreCase(ID)) {
+                System.out.println(a.describir());
+                return;
+            }
+
+        }
+        System.out.println("No existe el avatar " + ID);
+
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
     private void descCasilla(String nombre) {
+        Casilla c=tablero.encontrar_casilla(nombre);
+        if(c == null){
+            System.out.println("No existe la casilla " + nombre);
+        }else {
+            String info = c.infoCasilla();
+            if (info.equalsIgnoreCase("")) {
+                System.out.println("La casilla " + nombre + " no se puede describir");
+            } else {
+                System.out.println(info);
+            }
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
@@ -247,6 +275,7 @@ public class Menu {
     }
 
     //metodo privado para mostrar el jugador actual
+
     private void mostrarJugadorActual() {
         if (jugadores.isEmpty()) {
             System.out.println("No hay jugadores");
@@ -257,24 +286,33 @@ public class Menu {
                 ",\n  avatar: " + j.getAvatar().getId() + "\n}");
     }
 
-
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
-        for (Jugador j: jugadores){
-            System.out.println(j.describir());
+        if (jugadores.isEmpty()){
+            System.out.println("No hay jugadores");
+        }else {
+            for (Jugador j : jugadores) {
+                System.out.println(j.describir());
+            }
         }
-
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
     private void listarAvatares() {
+        if (avatares.isEmpty()){
+            System.out.println("No hay avatares");
+        }else {
+            for (Avatar a : avatares) {
+                System.out.println(a.describir());
+            }
+        }
     }
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
     }
-//
 
+//
 
     //Metodo para leer y ejecutar comandos desde un .txt
     private void ejecutarFichero(String fichero) {
