@@ -235,10 +235,7 @@ public class Menu {
             System.out.println("El jugador "+actual.getNombre()+ " ya ha tirado los dados.");
             return;
         }
-        if (actual.isEnCarcel()){
-            System.out.println("Estas en la carcel. Utiliza salir carcel o intentar sacar dobles");
-            return;
-        }
+
         //obtener valor de los dados.
         int valorDado1;
         int valorDado2;
@@ -252,9 +249,37 @@ public class Menu {
         }
 
         int tirada = valorDado1 + valorDado2; // suma los dos valores y los guarda en tirada
-
-        //logica para los 3 lanzamientos dobles seguidos.
         boolean dobles = valorDado1==valorDado2;
+        if (actual.isEnCarcel()){
+            if (dobles){
+                System.out.println("¡Has sacado dobles! (" +valorDado1+"+"+valorDado2+"). Sales de la carcel gratis.");
+                actual.setEnCarcel(false);
+            }
+            else{
+                actual.incrementarTiradasCarcel();
+                System.out.println("No has sacado dobles. Turnos en la carcel: "+ actual.getTiradasCarcel());
+                if(actual.getTiradasCarcel()==3){
+                    if (actual.getFortuna()>=Valor.SALIR_CARCEL){
+                        System.out.println("Llevas ya tres turnos en la carcel. Pagas 500.000€ obligatoriamente y sales de la carcel");
+                        actual.sumarFortuna(-Valor.SALIR_CARCEL);
+                        actual.sumarGastos(Valor.SALIR_CARCEL);
+                        actual.setEnCarcel(false);
+                    }
+                    else{
+                        System.out.println("Llevas 3 turnos y no tienes 500.000€ para salir de la cárcel. " + actual.getNombre() + " se declara en bancarrota.");
+                        actual.declararBancarrota(banca);
+                        tirado = true;
+                        return; // Se acaba su turno y su partida
+                    }
+
+                } else {
+                    tirado = true; // Pierde el turno y no se mueve
+                    return;
+                }
+            }
+        }
+
+        //logica para los 3 lanzamientos dobles seguidos
         if (dobles){
             lanzamientos++;
             if (lanzamientos==3){
