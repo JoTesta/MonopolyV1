@@ -3,6 +3,8 @@ package monopoly;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import partida.*;
 
@@ -413,6 +415,20 @@ public class Menu {
 
     //Metodo para leer y ejecutar comandos desde un .txt
     private void ejecutarFichero(String fichero) {
+        try {
+            File archivo = new File(fichero);
+            Scanner lector = new Scanner(archivo);
 
+            while (lector.hasNextLine()) {
+                String linea = lector.nextLine().trim();
+                if (!linea.isEmpty()) {
+                    System.out.println("$> " + linea);      //se imprime para que se vea qué está  haciendo el script
+                    analizarComando(linea);
+                }
+            }
+            lector.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: No se ha encontrado el archivo '" + fichero + "'.");
+        }
     }
 }
