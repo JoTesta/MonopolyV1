@@ -123,7 +123,7 @@ public class Menu {
                         String[] d = p[2].split("\\+");// separamos el texto por el +, y el try por si semete a+b || 5 || 9+12
                         int dado1Valor = Integer.parseInt(d[0]);
                         int dado2Valor = Integer.parseInt(d[1]);
-                        if (dado1Valor < 1 || dado1Valor > 6 || dado2Valor < 1 || dado2Valor > 6) {
+                        if (dado1Valor < 1 || dado2Valor < 1 ) {
                             System.out.println("Los dados son de 1 a 6, por ejemplo 2+6");
                         } else lanzarDados(dado1Valor, dado2Valor);
                         // tirada forzada
@@ -159,12 +159,15 @@ public class Menu {
                 break;
 
             case "salir":
-                if (p.length == 2 && (p[1].equalsIgnoreCase("cárcel") || p[1].equalsIgnoreCase("carcel"))) {
+                if (p.length == 1) {
+                    System.exit(0); // Cierra el programa por completo
+                } else if (p.length == 2 && (p[1].equalsIgnoreCase("cárcel") || p[1].equalsIgnoreCase("carcel"))) {
                     salirCarcel();
                 } else {
-                    System.out.println("Sintaxis: salir carcel");
+                    System.out.println("Sintaxis: salir | salir carcel");
                 }
                 break;
+
 
             case "comandos":
                 if (p.length == 2) {
