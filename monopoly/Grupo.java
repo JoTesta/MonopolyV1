@@ -102,6 +102,20 @@ class Grupo {
         return this.colorGrupo;
     }
 
+    public String getNombreGrupo() {
+
+        if (colorGrupo.equals(Valor.WHITE)) return "Blanco";
+        if (colorGrupo.equals(Valor.CYAN)) return "Cian";
+        if (colorGrupo.equals(Valor.PURPLE)) return "Rosa";
+        if (colorGrupo.equals(Valor.YELLOW)) return "Amarillo";
+        if (colorGrupo.equals(Valor.RED)) return "Rojo";
+        if (colorGrupo.equals(Valor.BLUE)) return "Azul";
+        if (colorGrupo.equals(Valor.GREEN)) return "Verde";
+        if (colorGrupo.equals(Valor.BLACK)) return "Negro";
+
+        return "";
+    }
+
     public ArrayList<Casilla> getMiembros() {
         return this.miembros;
     }

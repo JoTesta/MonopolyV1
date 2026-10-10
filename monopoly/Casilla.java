@@ -294,7 +294,7 @@ public class Casilla {
 
             return "{\n" +
                     "tipo: solar,\n" +
-                    "grupo: " + grupo.getColorGrupo() + ",\n" +
+                    "grupo: " + grupo.getNombreGrupo() + ",\n" +
                     "propietario: " + duenho.getNombre() + ",\n" +
                     "valor: " + valor + ",\n" +
                     "alquiler: " + impuesto + ",\n" +
@@ -323,7 +323,7 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("solar")) { //Si la casilla es un solar
                 return "{\n" +
                         "tipo: solar,\n" +
-                        "grupo: " + grupo.getColorGrupo() + ",\n" +
+                        "grupo: " + grupo.getNombreGrupo() + ",\n" +
                         "valor: " + valor + "\n" +
                         "}";
         }

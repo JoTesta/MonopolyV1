@@ -123,7 +123,7 @@ public class Menu {
                         String[] d = p[2].split("\\+");// separamos el texto por el +, y el try por si semete a+b || 5 || 9+12
                         int dado1Valor = Integer.parseInt(d[0]);
                         int dado2Valor = Integer.parseInt(d[1]);
-                        if (dado1Valor < 1 || dado2Valor < 1 ) {
+                        if (dado1Valor < 1 || dado1Valor > 6 || dado2Valor < 1 || dado2Valor > 6) {
                             System.out.println("Los dados son de 1 a 6, por ejemplo 2+6");
                         } else lanzarDados(dado1Valor, dado2Valor);
                         // tirada forzada
@@ -289,6 +289,7 @@ public class Menu {
                 System.out.println("Has sacado 3 dobles seguidos! Vas directamente a la carcel.");
                 actual.encarcelar(tablero.getPosiciones());
                 tirado = true;
+                System.out.println(tablero);
                 return;
             }
         }
@@ -306,6 +307,9 @@ public class Menu {
 
         } else {
             solvente = casillaActual.evaluarCasilla(actual, banca, tirada);//Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
+            if (!solvente) {
+                System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
+            }
             if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")) {
                 Casilla parking = tablero.encontrar_casilla("Parking");
                 if (parking != null) {
@@ -316,7 +320,8 @@ public class Menu {
         //repetir tirada en caso de lanzar dobles.
         if (dobles && !actual.isEnCarcel()){
             System.out.println("¡Has sacado dobles! ("+ valorDado1 + "+" + valorDado2 + "). Vuelve a lanzar los dados.");
-            tirado = false;     //se le permite tirar otra vez
+            tirado = false;//se le permite tirar otra vez
+            System.out.println(tablero);
         }
 
     }
@@ -331,6 +336,13 @@ public class Menu {
         //comprobacion !null
         if (objetivo == null){
             System.out.println("No existe la casilla "+nombre);
+            return;
+        }
+        if (!objetivo.getTipo().equalsIgnoreCase("solar") &&
+                !objetivo.getTipo().equalsIgnoreCase("servicio") &&
+                !objetivo.getTipo().equalsIgnoreCase("transporte")) {
+
+            System.out.println("La casilla " + nombre + " no se puede comprar.");
             return;
         }
         //comprobar que el jugador está en esta casilla
