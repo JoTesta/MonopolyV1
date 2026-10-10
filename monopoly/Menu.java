@@ -321,8 +321,8 @@ public class Menu {
         if (dobles && !actual.isEnCarcel()){
             System.out.println("¡Has sacado dobles! ("+ valorDado1 + "+" + valorDado2 + "). Vuelve a lanzar los dados.");
             tirado = false;//se le permite tirar otra vez
-            System.out.println(tablero);
         }
+        System.out.println(tablero);
 
     }
 
