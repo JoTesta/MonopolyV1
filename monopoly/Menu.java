@@ -231,6 +231,10 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados(int d1, int d2) {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
 
         Jugador actual = jugadores.get(turno); //Coge de la lista jugadores al jugador que tiene actualmente el turno.
         //comprobación de que no haya tirado ya los dados.
@@ -271,8 +275,18 @@ public class Menu {
                     else{
                         System.out.println("Llevas 3 turnos y no tienes 500.000€ para salir de la cárcel. " + actual.getNombre() + " se declara en bancarrota.");
                         actual.declararBancarrota(banca);
-                        tirado = true;
-                        return; // Se acaba su turno y su partida
+                        jugadores.remove(turno);
+                        avatares.remove(actual.getAvatar());
+                        if (turno >= jugadores.size()) turno = 0;
+                        tirado = false;
+                        lanzamientos = 0;
+                        if (jugadores.size() == 1) {
+                            System.out.println("¡" + jugadores.get(0).getNombre() + " gana la partida!");
+                        }
+                        else {
+                            System.out.println("El jugador actual es " + jugadores.get(turno).getNombre());
+                        }
+                        return;
                     }
 
                 } else {
@@ -301,9 +315,9 @@ public class Menu {
 
         Casilla casillaActual = actual.getAvatar().getLugar(); // preguntamos después de moverlo en que casilla esta
 
-        if (casillaActual.getNombre().equalsIgnoreCase("IrCarcel")) {
-            actual.encarcelar(tablero.getPosiciones());
-            tirado= true;
+        if (actual.isEnCarcel()) {          // ha caído en IrCarcel
+            System.out.println("El avatar se coloca en la casilla de Cárcel.");
+            tirado = true;
 
         } else {
             solvente = casillaActual.evaluarCasilla(actual, banca, tirada);//Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
@@ -330,6 +344,10 @@ public class Menu {
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
         Jugador actual = jugadores.get(turno);
         Casilla objetivo = tablero.encontrar_casilla(nombre);
 
@@ -367,6 +385,10 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
     private void salirCarcel() {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
         Jugador actual = jugadores.get(turno);
         //comprobacion de que esté en la carcel actualmente
         if (!actual.isEnCarcel()){
@@ -436,6 +458,10 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
         if (!tirado) {
             System.out.println("No puedes acabar el turno sin lanzar los dados.");
             return;

@@ -97,6 +97,8 @@ public class Casilla {
                     actual.sumarFortuna(-alquiler);  //Le restamos ealquiler al jugador
                     actual.sumarGastos(alquiler);    //Registramos dicha intervención
                     duenho.sumarFortuna(alquiler);   //Le añadimos el valor del alquiler pagado al propietario del solar
+                    System.out.println("Se han pagado " + (long) alquiler + " € de alquiler a " + duenho.getNombre() + ".");
+
 
                     return true; //Confirmamos que el jugador pudo pagar su deuda
                 }
@@ -155,6 +157,8 @@ public class Casilla {
 
                 actual.sumarFortuna(-impuesto); //Le restamos el valor del impuesto a la fortuna del jugador
                 actual.sumarGastos(impuesto);  //Guardamos la operacion
+                System.out.println("El jugador " + actual.getNombre() + " paga " + (long) impuesto + " € que se depositan en el Parking.");
+
 
                 return true;//Confirmamos que el jugador pudo pagar el impuesto
             }
@@ -165,6 +169,7 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) { //Comprobamos que la casilla en la que hemos caido es la de parking
 
             actual.sumarFortuna(valor); //Le sumamos al jugador el valor del parking
+            System.out.println("El jugador " + actual.getNombre() + " recibe " + (long) valor + " € del Parking.");
             valor = 0; //Reiniciamos el valor del parking
 
             return true; //Confirmamos que se pudo realizar la operacion
