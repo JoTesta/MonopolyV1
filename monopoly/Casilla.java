@@ -13,11 +13,15 @@ public class Casilla {
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
-    private float hipoteca; //Valor otorgado por hipotecar una casilla
+    private float hipoteca;//Valor otorgado por hipotecar una casilla
+    private boolean hipotecada; //Para saber si esta hipotecada o no
+    private float rentabilidad; //acumula el dinero q genera esa casilla
+    private int vecesVisitada; //el numero de veces que se ha visitado
     private float valorCasa; //Valor de la casa
     private float valorHotel; //Valor de un hotel
     private float valorPiscina; //Valor de piscina
     private float valorPistaDeporte; //Valor pista de deportes
+
 
     private float alquilerCasa; //Alquiler de la casa
     private float alquilerHotel; //Alquiler del hotel
@@ -304,6 +308,7 @@ public class Casilla {
                     "valor: " + valor + ",\n" +
                     "alquiler: " + impuesto + ",\n" +
                     "hipoteca: " + hipoteca + ",\n" +
+                    "hipotecada: " + hipotecada + ",\n" +
                     "valor hotel: " + valorHotel + ",\n" +
                     "valor casa: " + valorCasa + ",\n" +
                     "valor piscina: " + valorPiscina + ",\n" +
@@ -407,5 +412,81 @@ public class Casilla {
     }
     public float getValor() {
         return this.valor;
+    }
+
+    public float getHipoteca() { //devuelve el dinero q vale hipotecar la propiedad
+        return this.hipoteca;
+    }
+
+    public boolean isHipotecada() { //Para saber si esta hipotecada o no
+        return this.hipotecada;
+    }
+
+    public void setHipotecada(boolean hipotecada) { //para marcarla como hipotecada
+        this.hipotecada = hipotecada;
+    }
+    public float getRentabilidad() { //para devolver la rentabilidad
+        return this.rentabilidad;
+    }
+
+    public void sumarRentabilidad(float cantidad) { //para aumentar la rentabilidad cada vez que pagan al caer
+        this.rentabilidad += cantidad;
+    }
+
+    public int getVecesVisitada() { //para devolver las veces que se devolvio
+        return this.vecesVisitada;
+    }
+
+    public void incrementarVisitas() { //para aumar las veces que se visita una casilla
+        this.vecesVisitada++;
+    }
+    public boolean esHipotecable() {
+        return tipo.equalsIgnoreCase("solar") ||
+                tipo.equalsIgnoreCase("transporte") ||
+                tipo.equalsIgnoreCase("servicio");
+    }
+    public boolean puedeHipotecar(Jugador jugador) { //función para hipotecar
+
+        if (!esHipotecable()) { //si no es hipotecable
+            return false;
+        }
+
+        if (duenho != jugador) { //si el dueño es distinto del jugador
+            return false;
+        }
+
+        if (hipotecada) { //si ya esta hipotecada
+            return false;
+        }
+
+        return true;
+    }
+    public boolean puedeDeshipotecar(Jugador jugador) { //función para desipotecar
+
+        if (!esHipotecable()) { //si no es hipotecable
+            return false;
+        }
+
+        if (duenho != jugador) { //si el dueño es dintinto del jugador
+            return false;
+        }
+
+        if (!hipotecada) //si no esta hipotecada
+
+        if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene el dinero suficiente
+            return false;
+        }
+
+        return true;
+    }
+
+    public void hipotecar(Jugador jugador){
+        jugador.sumarFortuna(hipoteca);
+        this.hipotecada = true;
+
+    }
+    public void deshipotecar (Jugador jugador){
+        jugador.sumarFortuna(-hipoteca);
+        this.hipotecada= false;
     }
 }
