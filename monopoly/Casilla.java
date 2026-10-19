@@ -29,8 +29,15 @@ public class Casilla {
     private float alquilerPistaDeporte; //Alquiler de la pista de deportes
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
+    private ArrayList<Edificio> edificios; //edificios que estan en la casilla
+
+
+
+
+
     //Constructores:
     public Casilla() {
+        this.edificios = new ArrayList<>();// inicializamos el arraylist de edificios
         this.avatares = new ArrayList<>(); //Esto hace que cada casilla empiece con una lista vacía donde luego podremos meter los avatares que estén situados en ella.
     }//Parámetros vacíos
 
@@ -43,6 +50,7 @@ public class Casilla {
         this.posicion = posicion;
         this.valor = valor;
         this.duenho = duenho;
+        this.edificios = new ArrayList<>();// inicializamos el arraylist de edificios
         this.avatares = new ArrayList<>();
     } // Si hacemos new Casilla("Trans1", "Transporte", 5, 500000, banca); se guardaría Nombre = Trans1, tipo = transporte...
 
@@ -55,6 +63,7 @@ public class Casilla {
         this.posicion = posicion;
         this.impuesto = impuesto;
         this.duenho = duenho;
+        this.edificios = new ArrayList<>();// inicializamos el arraylist de edificios
         this.avatares = new ArrayList<>();
     } // Si hacemos new Casilla("Imp1", 4, 2000000, banca); se guardaria que caer en impuestos implica pagar 2000000
 
@@ -66,6 +75,7 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.duenho = duenho;
+        this.edificios = new ArrayList<>();// inicializamos el arraylist de edificios
         this.avatares = new ArrayList<>();
     }
 
@@ -331,28 +341,28 @@ public class Casilla {
      */
     public String casEnVenta() { //funcion para devolver un texto corto con la información necesaria para mostrar una propiedad que está en venta.
         if (tipo.equalsIgnoreCase("solar")) { //Si la casilla es un solar
-                return "{\n" +
-                        "tipo: solar,\n" +
-                        "grupo: " + grupo.getNombreGrupo() + ",\n" +
-                        "valor: " + valor + "\n" +
-                        "}";
+            return "{\n" +
+                    "tipo: solar,\n" +
+                    "grupo: " + grupo.getNombreGrupo() + ",\n" +
+                    "valor: " + valor + "\n" +
+                    "}";
         }
 
         if (tipo.equalsIgnoreCase("transporte")) { //Si la casilla es un trasnporte
-                return "{\n" +
-                        "tipo: transporte,\n" +
-                        "valor: " + valor + "\n" +
-                        "}";
+            return "{\n" +
+                    "tipo: transporte,\n" +
+                    "valor: " + valor + "\n" +
+                    "}";
         }
 
         if (tipo.equalsIgnoreCase("servicio")) { //Si la casilla es un servicio
-                return "{\n" +
-                        "tipo: servicio,\n" +
-                        "valor: " + valor + "\n" +
-                        "}";
+            return "{\n" +
+                    "tipo: servicio,\n" +
+                    "valor: " + valor + "\n" +
+                    "}";
         }
 
-            return "";
+        return "";
     }
 
 
@@ -437,6 +447,8 @@ public class Casilla {
         return this.vecesVisitada;
     }
 
+    public ArrayList<Edificio> getEdificios(){return this.edificios; }
+
     public void incrementarVisitas() { //para aumar las veces que se visita una casilla
         this.vecesVisitada++;
     }
@@ -473,9 +485,9 @@ public class Casilla {
 
         if (!hipotecada) //si no esta hipotecada
 
-        if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene el dinero suficiente
-            return false;
-        }
+            if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene el dinero suficiente
+                return false;
+            }
 
         return true;
     }
@@ -488,5 +500,41 @@ public class Casilla {
     public void deshipotecar (Jugador jugador){
         jugador.sumarFortuna(-hipoteca);
         this.hipotecada= false;
+    }
+
+    public boolean tieneEdificios(){
+        if (this.getEdificios().isEmpty() ){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public int contarEdificios(String tipo){// cuenta cierto tipo de edificio en una casilla
+        int contador = 0;
+        for (Edificio e : edificios){
+            if (e.getTipoEdificio().equalsIgnoreCase(tipo)){
+                contador++;
+            }
+        }
+
+        return contador;
+    }
+
+    public float getPrecioEdificio(String tipo){
+        if (tipo.equalsIgnoreCase("casa")){
+            return valorCasa;
+        } else if (tipo.equalsIgnoreCase("piscina")){
+            return valorPiscina;
+        } else if (tipo.equalsIgnoreCase("hotel")){
+            return valorHotel;
+        } else if (tipo.equalsIgnoreCase("pista_deporte")) {
+            return valorPistaDeporte;
+        } return -1;
+    }
+
+    public void edificar(String tipo, Jugador jugador, Jugador banca){
+
     }
 }
