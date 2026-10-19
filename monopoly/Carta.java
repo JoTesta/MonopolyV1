@@ -1,4 +1,4 @@
 package monopoly;
 
-public class carta {
+public class Carta {
 }
