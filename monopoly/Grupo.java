@@ -10,12 +10,14 @@ class Grupo {
     private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
     private int numCasillas; //Número de casillas del grupo.
+    private float rentabilidad;
 
     //Constructor vacío.
     public Grupo() {
         this.miembros = new ArrayList<Casilla>();
         this.colorGrupo = "";
         this.numCasillas = 0;
+        this.rentabilidad = 0;
     }
 
     /*Constructor para cuando el grupo está formado por DOS CASILLAS:
@@ -126,6 +128,23 @@ class Grupo {
 
     public void setColorGrupo(String colorGrupo) {
         this.colorGrupo = colorGrupo;
+    }
+
+    public float getRentabilidad(){
+        return this.rentabilidad;
+    }
+
+    public void sumarRentabilidad(float cantidad){
+        this.rentabilidad += cantidad;
+    }
+
+    public boolean tieneHipotecadas(){
+        for (Casilla c : miembros){
+            if (c.isHipotecada() == true){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
