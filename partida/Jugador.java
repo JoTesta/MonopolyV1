@@ -16,6 +16,13 @@ public class Jugador {
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
+    private float dineroInvertido;
+    private float pagoTasasEImpuestos;
+    private float pagoDeAlquileres;
+    private float cobroDeAlquileres;
+    private float pasarPorCasillaDeSalida;
+    private float premiosInversionesOBote;
+    private int vecesEnLaCarcel;
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -27,6 +34,13 @@ public class Jugador {
         this.vueltas = 0;
         this.avatar = null;
         this.propiedades = new ArrayList<>();
+        this.dineroInvertido = 0;
+        this.pagoTasasEImpuestos = 0;
+        this.pagoDeAlquileres = 0;
+        this.cobroDeAlquileres = 0;
+        this.pasarPorCasillaDeSalida = 0;
+        this.premiosInversionesOBote = 0;
+        this.vecesEnLaCarcel = 0;
     }
 
     /*Constructor principal. Requiere parámetros:
@@ -83,6 +97,7 @@ public class Jugador {
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
         this.enCarcel = true;
+        registrarEntradaCarcel();
         this.tiradasCarcel = 0;
         Casilla carcel = pos.get(1).get(0);
 
@@ -172,4 +187,68 @@ public class Jugador {
             avatar.getLugar().eliminarAvatar(avatar);
         }
     }
+    public void registrarDineroInvertido(float cantidad){
+        this.dineroInvertido += cantidad;
+    }
+
+    public void registrarPagoTasasImpuesto(float cantidad){
+        this.pagoTasasEImpuestos += cantidad;
+    }
+
+    public void registrarPagoAlquiler ( float cantidad){
+        this.pagoDeAlquileres += cantidad;
+    }
+    public void registrarCobroAlquiler (float cantidad){
+        this.cobroDeAlquileres += cantidad;
+
+    }
+    public void registrarPremioInversionOBote(float cantidad) {
+        this.premiosInversionesOBote += cantidad;
+    }
+    public void registrarEntradaCarcel(){
+        this.vecesEnLaCarcel ++;
+    }
+
+    public float getDineroInvertido() {
+        return this.dineroInvertido;
+    }
+
+    public float getPagoTasasEImpuestos() {
+        return this.pagoTasasEImpuestos;
+    }
+
+    public float getPagoDeAlquileres() {
+        return this.pagoDeAlquileres;
+    }
+
+    public float getCobroDeAlquileres() {
+        return this.cobroDeAlquileres;
+    }
+
+    public float getPasarPorCasillaDeSalida() {
+        return this.pasarPorCasillaDeSalida;
+    }
+
+    public float getPremiosInversionesOBote() {
+        return this.premiosInversionesOBote;
+    }
+
+    public int getVecesEnLaCarcel() {
+        return this.vecesEnLaCarcel;
+    }
+
+    public String mostrarEstadisticas(){
+        return "{\n + " +
+                "dineroInvertido: " + dineroInvertido + ",\n" +
+                "pagoTasasEImpuestos: " + pagoTasasEImpuestos + ",\n" +
+                "pagoDeAlquileres: " + pagoDeAlquileres + ",\n" +
+                "cobroDeAlquileres: " + cobroDeAlquileres + ",\n" +
+                "pasarPorCasillaDeSalida: " + pasarPorCasillaDeSalida + ",\n" +
+                "premiosInversionesOBote: " + premiosInversionesOBote + ",\n" +
+                "vecesEnLaCarcel: " + vecesEnLaCarcel + "\n" +
+                "}";
+    }
+
+
+
 }
