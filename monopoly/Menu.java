@@ -208,6 +208,10 @@ public class Menu {
                 }
                 break;
 
+            case "delarar":
+                if (p.length == 2 && p[1].equalsIgnoreCase("bancarrota")){declararBancarrota();}
+                else{System.out.println("Sintaxis: declarar bancarrota");}
+
             default:
                 System.out.println("Comando no válido");
         }
@@ -598,7 +602,7 @@ public class Menu {
                     break;
 
                 default:
-                    System.out.println("Carta de comunidad no válida.");
+                    System.out.println("Carta de suerte no válida.");
             }
         }
         else if (tipo.equalsIgnoreCase("comunidad")){
@@ -670,6 +674,7 @@ public class Menu {
         origen.eliminarAvatar(av);
         av.setLugar(destino);
         destino.anhadirAvatar(av);
+        System.out.println(jugador.getNombre()+" se mueve hasta la casilla "+destino.getNombre()+ ".");
 
         evaluarDestino(jugador,destino);
     }
@@ -727,5 +732,8 @@ public class Menu {
         }
     }
 
+    private void eliminarJugador(){}
+
+    private void declararBancarrota(){}
 
     }
