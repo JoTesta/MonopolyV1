@@ -594,6 +594,7 @@ public class Menu {
                     break;
 
                 case 7: //transporte más cercano
+                    transporteMasCercano(jugador);
                     break;
 
                 default:
@@ -613,7 +614,7 @@ public class Menu {
                     break;
 
                 case 3: //ir a salida
-                    moverAcasilla(jugador, tablero.obtenerCasilla("Salida"));
+                    moverAcasilla(jugador, tablero.encontrar_casilla("Salida"),true);
                     break;
 
                 case 4: //cobra 500.000€
@@ -622,11 +623,11 @@ public class Menu {
                     break;
 
                 case 5: //retrocede hasta solar1
-                    moverAcasilla(jugador,tablero.obtenerCasilla("Solar1"),false);
+                    moverAcasilla(jugador,tablero.encontrar_casilla("Solar1"),false);
                     break;
 
                 case 6: //ve a solar20
-                    moverAcasilla(jugador,tablero.obtenerCasilla("Solar20"),true);
+                    moverAcasilla(jugador,tablero.encontrar_casilla("Solar20"),true);
                     break;
 
                 default:
@@ -688,7 +689,43 @@ public class Menu {
         }
     }
 
-    private void transporteMasCercano(Jugador jugador){}
+    private void transporteMasCercano(Jugador jugador){
+        int pos = jugador.getAvatar().getLugar().getPosicion();
+        Casilla destino = null;
+        //bucle para encontrar la casilla de transporte más cercana
+        for (int i=0;i<40 && destino == null; i++){
+            Casilla c = tablero.obtenerCasilla((pos + i -1)%40 +1);
+            if (c.getTipo().equalsIgnoreCase("transporte")){destino = c;}
+        }
+        //movimiento manual, sin evaluarDestino porque el alquiler es el doble
+        Avatar av = jugador.getAvatar();
+        Casilla inicial = av.getLugar();
+        if (destino.getPosicion() < inicial.getPosicion()) {
+            jugador.sumarFortuna(Valor.SUMA_VUELTA);
+            jugador.sumarVueltas();
+            System.out.println("El jugador " + jugador.getNombre() + " pasa por la Salida y recibe 2000000€.");
+        }
+
+        inicial.eliminarAvatar(av);
+        av.setLugar(destino);
+        destino.anhadirAvatar(av);
+        System.out.println("El avatar " + av.getId() + " avanza hasta " + destino.getNombre() + ".");
+
+        //si se cae en transporte y tiene dueño, se paga el doble de lo indicado.
+        Float alquiler = 2.f* 250000;
+        Jugador duenho = destino.getDuenho();
+        if (duenho==banca){
+            System.out.println("La casilla "+ destino.getNombre()+ " no tiene dueño, puedes comprarla con: comprar "+destino.getNombre());
+        }
+        else if (duenho!=jugador){
+            if (jugador.getFortuna()>=alquiler){
+                pagar(jugador, alquiler,duenho);}
+            else{
+                solvente = false;
+                System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
+            }
+        }
+    }
 
 
     }
