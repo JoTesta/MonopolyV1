@@ -100,11 +100,9 @@ public class Casilla {
 
             if (duenho != banca && duenho != actual) {//Comprobamos dos cosas, primero que si el dueño no es la banca, de ser asi comprobamos que si el dueño no es el jugador que ha caido en ella
 
-                float alquiler = impuesto; //Creamos una variable llamada alquiler y le damos inicialmente el valor de impuesto, hacemos esto para que si el usuariotiene tienetodo el grupo no se cambie el valor de impuesto
+                float alquiler = calcularAlquiler(); //Creamos una variable llamada alquiler y le damos inicialmente el valor de impuesto, hacemos esto para que si el usuariotiene tienetodo el grupo no se cambie el valor de impuesto
 
-                if (grupo != null && grupo.esDuenhoGrupo(duenho)) { //comprobamos que esta casilla tiene un grupo asignado y que el propietario tienetodo el grupo
-                    alquiler = alquiler * 2; //el alquiler se multiplica por 2
-                }
+
 
                 if (actual.getFortuna() >= alquiler) {  //Si el jugador tiene dinero para pagar el alquiler del solar
 
@@ -617,4 +615,38 @@ public class Casilla {
                 + jugador.getNombre() + " se reduce en " + (long) precio + "€.");
 
     }
+
+    public float getAlquilerEdificio(String tipo){
+
+        if (tipo.equalsIgnoreCase("casa")){
+            return alquilerCasa;
+        } else if (tipo.equalsIgnoreCase("piscina")){
+            return alquilerPiscina;
+        } else if (tipo.equalsIgnoreCase("hotel")){
+            return alquilerHotel;
+        } else if (tipo.equalsIgnoreCase("pista_deporte")) {
+            return alquilerPistaDeporte;
+        } return -1;
+    }
+
+    public float calcularAlquiler(){
+
+        if(!tieneEdificios()){
+            float alquiler= this.impuesto;
+            if(grupo != null && grupo.esDuenhoGrupo(duenho)){
+                alquiler = alquiler*2;
+
+            }
+            return alquiler;
+        }
+
+        float total = 0;
+
+        for(Edificio e: edificios){
+            total = total + getAlquilerEdificio(e.getTipoEdificio());
+        }
+        return total;
+
+    }
+
 }
