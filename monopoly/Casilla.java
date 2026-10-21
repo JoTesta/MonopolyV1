@@ -535,6 +535,86 @@ public class Casilla {
     }
 
     public void edificar(String tipo, Jugador jugador, Jugador banca){
+        float precio = getPrecioEdificio(tipo);
+
+        if(precio == -1){
+            System.out.println("Tipo de edificio no valido.");
+            return;
+        }
+        if(!this.tipo.equalsIgnoreCase("solar")){
+            System.out.println("No se puede edificar en esta casilla.");
+            return;
+        }
+        if(jugador != this.duenho){
+            System.out.println("La casilla " + this.nombre + " no pertenece a " + jugador.getNombre());
+            return;
+        }
+        if(!grupo.esDuenhoGrupo(jugador)){
+            System.out.println(jugador.getNombre()+ " no es dueño de todo el grupo.");
+            return;
+        }
+        if(tipo.equalsIgnoreCase("casa")){
+            if(contarEdificios("hotel") >= 1){
+                System.out.println("Ya hay un hotel en la casilla");
+                return;
+            }
+            if(contarEdificios("casa") >= 4){
+                System.out.println("Ya hay 4 casas en la casilla");
+                return;
+            }
+        }
+        if(tipo.equalsIgnoreCase("hotel")){
+            if(contarEdificios("hotel") >= 1){
+                System.out.println("Ya hay un hotel en la casilla");
+                return;
+            }
+            if(contarEdificios("casa") < 4){
+                System.out.println("No hay 4 casas en la casilla");
+                return;
+            }
+        }
+        if(tipo.equalsIgnoreCase("piscina")){
+            if(contarEdificios("hotel") < 1){
+                System.out.println("Aun no hay un hotel en la casilla");
+                return;
+            }
+            if(contarEdificios("piscina") >= 1){
+                System.out.println("Ya hay una piscina en la casilla");
+                return;
+            }
+        }
+        if(tipo.equalsIgnoreCase("pista_deporte")){
+            if(contarEdificios("hotel") < 1 || contarEdificios("piscina") < 1){
+                System.out.println("Se necesita un hotel y una piscina para construir una pista de deporte.");
+                return;
+            }
+            if (contarEdificios("pista_deporte") >= 1){
+                System.out.println("Ya hay una pista de deporte");
+                return;
+            }
+        }
+        if(jugador.getFortuna() < precio){
+            System.out.println("La fortuna de " + jugador.getNombre() + " no es suficiente para edificar un " + tipo
+                    + " en la " + this.getNombre());
+            return;
+        }
+        if(tipo.equalsIgnoreCase("hotel")){
+            for (int i = edificios.size() - 1; i >= 0; i--){
+                if(edificios.get(i).getTipoEdificio().equalsIgnoreCase("casa")){
+                    edificios.remove(i);
+                }
+            }
+        }
+
+        jugador.sumarFortuna(-precio);
+        jugador.sumarGastos(precio);
+        banca.sumarFortuna(precio);
+
+        Edificio edificio = new Edificio(tipo, this, jugador, precio);
+        edificios.add(edificio);
+
+        System.out.println("Se ha edificado un/a " + tipo + " en " + this.nombre + ". La fortuna de "
+                + jugador.getNombre() + " se reduce en " + (long) precio + "€.");
 
     }
 }
