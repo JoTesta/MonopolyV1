@@ -122,17 +122,6 @@ public class Menu {
                 else System.out.println("Comando no válido.");
                 break;
 
-            case "listar":
-                if (p.length < 2) {
-                    System.out.println("Uso: listar jugadores|avatares|enventa");
-                    break;
-                }
-                if (p[1].equalsIgnoreCase("jugadores")) listarJugadores();
-                else if (p[1].equalsIgnoreCase("avatares")) listarAvatares();
-                else if (p[1].equalsIgnoreCase("enventa")) listarVenta();
-                else System.out.println("Comando no válido.");
-                break;
-
             case "acabar":
                 if (p.length == 2 && p[1].equalsIgnoreCase("turno")) {
                     acabarTurno();
@@ -186,6 +175,40 @@ public class Menu {
                 } else {
                     System.out.println("Sintaxis: comprar nombre_casilla");
                 }
+                break;
+
+            case "edificar":
+                if (p.length == 2) {
+                    edificar(p[1]);
+                } else {
+                    System.out.println("Sintaxis: edificar casa | hotel | piscina | pista_deporte");
+                }
+                break;
+
+            case "vender":
+                if (p.length == 4) {
+                    try {
+                        int cantidad = Integer.parseInt(p[3]);
+                        vender(p[1], p[2], cantidad);
+                    } catch (NumberFormatException e) {
+                        System.out.println("La cantidad tiene que ser un número, por ejemplo: vender casas Solar5 2");
+                    }
+                } else {
+                    System.out.println("Sintaxis: vender <tipo> <casilla> <cantidad>");
+                }
+                break;
+
+            case "listar":
+                if (p.length < 2) {
+                    System.out.println("Uso: listar jugadores|avatares|enventa|edificios");
+                    break;
+                }
+                if (p[1].equalsIgnoreCase("jugadores")) listarJugadores();
+                else if (p[1].equalsIgnoreCase("avatares")) listarAvatares();
+                else if (p[1].equalsIgnoreCase("enventa")) listarVenta();
+                else if (p[1].equalsIgnoreCase("edificios") && p.length == 2) listarEdificios();
+                else if (p[1].equalsIgnoreCase("edificios") && p.length == 3) listarEdificiosGrupo(p[2]);
+                else System.out.println("Comando no válido.");
                 break;
 
             case "salir":
@@ -417,6 +440,17 @@ public class Menu {
         System.out.println("El jugador "+actual.getNombre() + " compra la casilla "+ nombre + " por " + objetivo.getValor() + " €. Su fortuna actual es de "+ actual.getFortuna()+ " €.");
     }
 
+    // Método que ejecuta el comando 'edificar <tipo>'.
+    private void edificar(String tipo) {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
+        Jugador actual = jugadores.get(turno);
+        Casilla casillaActual = actual.getAvatar().getLugar();
+        casillaActual.edificar(tipo, actual, banca);
+    }
+
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
     private void salirCarcel() {
         if (jugadores.size() < 2) {
@@ -581,8 +615,8 @@ public class Menu {
                     else{
                         for (Jugador acreedor : jugadores){
                             if (acreedor!=jugador){
-                            pagar(jugador, 250000, acreedor);
-                        }
+                                pagar(jugador, 250000, acreedor);
+                            }
                         }
                     }
                     break;
@@ -736,4 +770,91 @@ public class Menu {
 
     private void declararBancarrota(){}
 
+    // Convierte el tipo que escribe el usuario
+    private String tipoSingular(String tipo) {
+        if (tipo.equalsIgnoreCase("casa") || tipo.equalsIgnoreCase("casas")) {
+            return "casa";
+        } else if (tipo.equalsIgnoreCase("hotel") || tipo.equalsIgnoreCase("hoteles")) {
+            return "hotel";
+        } else if (tipo.equalsIgnoreCase("piscina") || tipo.equalsIgnoreCase("piscinas")) {
+            return "piscina";
+        } else if (tipo.equalsIgnoreCase("pista_deporte") || tipo.equalsIgnoreCase("pistas_deporte")) {
+            return "pista_deporte";
+        }
+        return tipo;
     }
+
+    // Método que ejecuta el comando 'vender <tipo> <casilla> <cantidad>'.
+    private void vender(String tipo, String nombreCasilla, int cantidad) {
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
+        Jugador actual = jugadores.get(turno);
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+
+        if (casilla == null) {
+            System.out.println("No existe la casilla " + nombreCasilla);
+            return;
+        }
+        casilla.venderEdificio(tipoSingular(tipo), cantidad, actual, banca);
+    }
+
+    // Método que realiza las acciones asociadas al comando 'listar edificios'.
+    private void listarEdificios() {
+        boolean hayEdificios = false;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()) {
+            for (Casilla c : lado) {
+                for (Edificio e : c.getEdificios()) {
+                    System.out.println(e.infoEdificio());
+                    hayEdificios = true;
+                }
+            }
+        }
+
+        if (!hayEdificios) {
+            System.out.println("No hay edificios construidos.");
+        }
+    }
+
+    // Método que realiza las acciones asociadas al comando 'listar edificios <color>'.
+    private void listarEdificiosGrupo(String color) {
+        boolean existeGrupo = false;
+        boolean puedeCasa = false, puedeHotel = false, puedePiscina = false, puedePista = false;
+
+        for (ArrayList<Casilla> lado : tablero.getPosiciones()) {
+            for (Casilla c : lado) {
+                if (c.getGrupo() != null && c.getGrupo().getNombreGrupo().equalsIgnoreCase(color)) {
+                    existeGrupo = true;
+                    System.out.println(c.infoEdificiosCasilla());
+
+                    // ¿Qué se podría construir todavía en esta casilla?
+                    if (c.contarEdificios("hotel") == 0 && c.contarEdificios("casa") < 4) puedeCasa = true;
+                    if (c.contarEdificios("hotel") == 0) puedeHotel = true;
+                    if (c.contarEdificios("piscina") == 0) puedePiscina = true;
+                    if (c.contarEdificios("pista_deporte") == 0) puedePista = true;
+                }
+            }
+        }
+
+        if (!existeGrupo) {
+            System.out.println("No existe el grupo " + color + ".");
+            return;
+        }
+
+        String sePuede = "";
+        if (puedeCasa) sePuede += "casas, ";
+        if (puedeHotel) sePuede += "hoteles, ";
+        if (puedePiscina) sePuede += "piscinas, ";
+        if (puedePista) sePuede += "pistas de deporte, ";
+
+        if (sePuede.isEmpty()) {
+            System.out.println("Ya no se puede edificar nada más en este grupo.");
+        } else {
+            // quitamos la última ", "
+            System.out.println("Aún se puede edificar: " + sePuede.substring(0, sePuede.length() - 2) + ".");
+        }
+    }
+
+}
