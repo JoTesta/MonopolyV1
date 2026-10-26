@@ -162,7 +162,7 @@ public class Jugador {
                 "  avatar: " + (avatar != null ? avatar.getId() : "-") + ",\n" +
                 "  fortuna: " + (long) fortuna + ",\n" +
                 "  propiedades: " + props + "\n" +
-                "  hipotecas: -\n" +
+                "  hipotecas: " + nombresHipotecas() + "\n" +
                 "  edificios: -\n" +
                 "}";
     }
@@ -238,7 +238,7 @@ public class Jugador {
     }
 
     public String mostrarEstadisticas(){
-        return "{\n + " +
+        return "{\n" +
                 "dineroInvertido: " + dineroInvertido + ",\n" +
                 "pagoTasasEImpuestos: " + pagoTasasEImpuestos + ",\n" +
                 "pagoDeAlquileres: " + pagoDeAlquileres + ",\n" +
@@ -247,6 +247,35 @@ public class Jugador {
                 "premiosInversionesOBote: " + premiosInversionesOBote + ",\n" +
                 "vecesEnLaCarcel: " + vecesEnLaCarcel + "\n" +
                 "}";
+    }
+    public void registrarPasoSalida(float cantidad) {
+        this.pasarPorCasillaDeSalida += cantidad;
+    }
+
+    private String nombresHipotecas() {
+
+        StringBuilder sb = new StringBuilder("[");
+        boolean primera = true; //contador para saber si tenemos alguna hipotecada
+
+        for (Casilla c : propiedades) { //recorremos propiedades
+
+            if (c.isHipotecada()) { //si esta hipotecada
+
+                if (!primera) { //y no es la primera
+                    sb.append(", "); //la añade con una coma
+                }
+
+                sb.append(c.getNombre());
+                primera = false;
+            }
+        }
+
+        if (primera) {
+            return "-";
+        }
+
+        sb.append("]");
+        return sb.toString();
     }
 
 

@@ -209,6 +209,7 @@ public class Casilla {
 
             solicitante.sumarFortuna(-this.valor); //Le restamos el valor de la casilla al saldo del jugador
             solicitante.sumarGastos(this.valor); // Registramos que ha gastado ese dinero
+            solicitante.registrarDineroInvertido(this.valor);
 
             banca.sumarFortuna(this.valor); //Añadimos el dinero gastado por el participante a la banca
 
@@ -471,21 +472,23 @@ public class Casilla {
 
         return true;
     }
-    public boolean puedeDeshipotecar(Jugador jugador) { //función para desipotecar
+    public boolean puedeDeshipotecar(Jugador jugador) {
 
         if (!esHipotecable()) { //si no es hipotecable
             return false;
         }
 
-        if (duenho != jugador) { //si el dueño es dintinto del jugador
+        if (duenho != jugador) { //si el dueño no es el jugador
             return false;
         }
 
-        if (!hipotecada) //si no esta hipotecada
+        if (!hipotecada) { //si no esta hipotecada
+            return false;
+        }
 
-            if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene el dinero suficiente
-                return false;
-            }
+        if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene dinero suficiente
+            return false;
+        }
 
         return true;
     }

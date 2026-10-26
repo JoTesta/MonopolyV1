@@ -64,6 +64,7 @@ public class Avatar {
         //3. Cobrar la Salida si ha dado la vuelta
         if (pasaPorSalida) {
             this.jugador.sumarFortuna(Valor.SUMA_VUELTA);
+            this.jugador.registrarPasoSalida(Valor.SUMA_VUELTA);
             this.jugador.sumarVueltas();
             System.out.println("El jugador " + this.jugador.getNombre() + " pasa por la Salida y recibe 2.000.000€.");
         }
