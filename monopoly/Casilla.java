@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Casilla {
 
@@ -649,6 +650,52 @@ public class Casilla {
             total = total + getAlquilerEdificio(e.getTipoEdificio());
         }
         return total;
+
+    }
+
+    public void venderEdificio(String tipo, int cantidad, Jugador jugador, Jugador banca ){
+        float precio = getPrecioEdificio(tipo);
+
+        if (precio == -1){
+            System.out.println("Tipo de edificio no valido.");
+            return;
+        }
+
+        if(duenho != jugador) {
+            System.out.println("No se pueden vender " + tipo + " en " + this.getNombre() +
+                    ". Esta propiedad no pertenece a " + jugador.getNombre() + ".");
+            return;
+        }
+
+        if(this.contarEdificios(tipo) == 0){
+            System.out.println("No hay ningún/a "+ tipo +" en "+ this.getNombre()+ ".");
+            return;
+        }
+
+        int contarEdificios = contarEdificios(tipo);
+        int aVender = Math.min(contarEdificios, cantidad);
+        int vendidos = 0;
+
+        Iterator<Edificio> it = edificios.iterator();
+
+        while (it.hasNext() && vendidos < aVender) {
+            Edificio e = it.next();
+            if (e.getTipoEdificio().equalsIgnoreCase(tipo)) {
+                it.remove();
+                vendidos++;
+            }
+        }
+        float dinero = precio * aVender;
+        jugador.sumarFortuna(dinero);
+        banca.sumarFortuna(-dinero);
+
+        if (aVender< cantidad){
+            System.out.println("Solamente se puede vender " + aVender + " " + tipo + ", recibiendo " + (long) dinero + "€.");
+        } else{
+            System.out.println(jugador.getNombre() + " ha vendido " + aVender + " " + tipo + " en " + this.nombre
+                    + ", recibiendo " + (long) dinero + "€. En la propiedad quedan " + contarEdificios(tipo) + " " + tipo + ".");
+
+        }
 
     }
 
