@@ -97,8 +97,12 @@ public class Casilla {
      * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
      * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        if (tipo.equalsIgnoreCase("solar")) { //comprobamos que si la casilla en la que hemos caido es un solar
+        incrementarVisitas();
 
+        if (tipo.equalsIgnoreCase("solar")) { //comprobamos que si la casilla en la que hemos caido es un solar
+            if (hipotecada) {
+                return true;
+            }
             if (duenho != banca && duenho != actual) {//Comprobamos dos cosas, primero que si el dueño no es la banca, de ser asi comprobamos que si el dueño no es el jugador que ha caido en ella
 
                 float alquiler = calcularAlquiler(); //Creamos una variable llamada alquiler y le damos inicialmente el valor de impuesto, hacemos esto para que si el usuariotiene tienetodo el grupo no se cambie el valor de impuesto
@@ -109,7 +113,16 @@ public class Casilla {
 
                     actual.sumarFortuna(-alquiler);  //Le restamos ealquiler al jugador
                     actual.sumarGastos(alquiler);    //Registramos dicha intervención
-                    duenho.sumarFortuna(alquiler);   //Le añadimos el valor del alquiler pagado al propietario del solar
+                    duenho.sumarFortuna(alquiler);//Le añadimos el valor del alquiler pagado al propietario del solar
+
+                    actual.registrarPagoAlquiler(alquiler);
+                    duenho.registrarCobroAlquiler(alquiler);
+                    this.sumarRentabilidad(alquiler);
+
+                    if(grupo!=null){
+                        grupo.sumarRentabilidad(alquiler);
+                    }
+
                     System.out.println("Se han pagado " + (long) alquiler + " € de alquiler a " + duenho.getNombre() + ".");
 
 
@@ -123,6 +136,10 @@ public class Casilla {
 
         if (tipo.equalsIgnoreCase("servicio")) { //Comprobamos que si la casilla en la que hemos caido es un servicio
 
+            if (hipotecada){
+                return true;
+            }
+
             if (duenho != banca && duenho != actual) { //Si el dueño es distinto de la banca o distinto del jugador
 
                 float alquiler = 4 * tirada * Valor.FACTOR_SERVICIOS;  //El alquiler se multiplica por 4 y por la tirada del jugador
@@ -133,6 +150,10 @@ public class Casilla {
                     actual.sumarGastos(alquiler);  //Guardamos la realización de dicha operación
                     duenho.sumarFortuna(alquiler); //Le sumamos al propietario el dinero del alquiler que ha pagado el jugador
 
+                    actual.registrarPagoAlquiler(alquiler);
+                    duenho.registrarCobroAlquiler(alquiler);
+                    this.sumarRentabilidad(alquiler);
+
                     return true; //Confirmamos que el jugador ha pagado su deuda
                 }
 
@@ -141,6 +162,10 @@ public class Casilla {
         }
 
         if (tipo.equalsIgnoreCase("transporte")){ //Comprobamos que la casilla en la que hemos caido es la de transporte
+
+            if (hipotecada){
+                return true;
+            }
 
             if (duenho != banca && duenho != actual){ //Si el dueño es diferente de la banca o del propio jugador
 
@@ -151,6 +176,10 @@ public class Casilla {
                     actual.sumarFortuna(-transporte); //Le quitamos al jugador el dinero del transporte
                     actual.sumarGastos(transporte); //Guardamos la operación que acabamos de hacer
                     duenho.sumarFortuna(transporte);//Le añadimos al dueño de dicha casilla el importe que se ha pagado
+
+                    actual.registrarPagoAlquiler(transporte);
+                    duenho.registrarCobroAlquiler(transporte);
+                    this.sumarRentabilidad(transporte);
 
                     return true; //Confirmamos que el jugador pudo pagar el importe
                 }
@@ -170,6 +199,9 @@ public class Casilla {
 
                 actual.sumarFortuna(-impuesto); //Le restamos el valor del impuesto a la fortuna del jugador
                 actual.sumarGastos(impuesto);  //Guardamos la operacion
+
+                actual.registrarPagoTasasImpuesto(impuesto);
+
                 System.out.println("El jugador " + actual.getNombre() + " paga " + (long) impuesto + " € que se depositan en el Parking.");
 
 
@@ -182,6 +214,9 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("especial") && nombre.equalsIgnoreCase("Parking")) { //Comprobamos que la casilla en la que hemos caido es la de parking
 
             actual.sumarFortuna(valor); //Le sumamos al jugador el valor del parking
+
+            actual.registrarPremioInversionOBote(valor);
+
             System.out.println("El jugador " + actual.getNombre() + " recibe " + (long) valor + " € del Parking.");
             valor = 0; //Reiniciamos el valor del parking
 
@@ -471,6 +506,10 @@ public class Casilla {
             return false;
         }
 
+        if (tipo.equalsIgnoreCase("solar") && tieneEdificios()){
+            return false;
+        }
+
         return true;
     }
     public boolean puedeDeshipotecar(Jugador jugador) {
@@ -555,6 +594,10 @@ public class Casilla {
             System.out.println(jugador.getNombre()+ " no es dueño de todo el grupo.");
             return;
         }
+        if (grupo.tieneHipotecadas()){
+            System.out.println("No se puede edificar porque hay una propiedad hipotecada en el grupo");
+            return;
+        }
         if(tipo.equalsIgnoreCase("casa")){
             if(contarEdificios("hotel") >= 1){
                 System.out.println("Ya hay un hotel en la casilla");
@@ -611,6 +654,7 @@ public class Casilla {
         jugador.sumarFortuna(-precio);
         jugador.sumarGastos(precio);
         banca.sumarFortuna(precio);
+        jugador.registrarDineroInvertido(precio);
 
         Edificio edificio = new Edificio(tipo, this, jugador, precio);
         edificios.add(edificio);

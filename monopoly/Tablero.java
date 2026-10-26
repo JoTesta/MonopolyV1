@@ -268,5 +268,73 @@ public class Tablero {
         return this.banca;
     }
 
+    public Casilla casillaMasRentable() {
+
+        Casilla mejor = null; //inicializamos la variable de cual es mejor a null
+
+        for (ArrayList<Casilla> lado : posiciones) { //recorremos las casillas
+            for (Casilla c : lado) {
+
+                if (mejor == null ||
+                        c.getRentabilidad() > mejor.getRentabilidad()) {
+
+                    mejor = c;
+                }
+            }
+        }
+
+        return mejor;
+    }
+
+    public Casilla casillaMasFrecuentada() {
+
+        Casilla mejor = null;
+
+        for (ArrayList<Casilla> lado : posiciones) {
+            for (Casilla c : lado) {
+
+                if (mejor == null ||
+                        c.getVecesVisitada() > mejor.getVecesVisitada()) {
+
+                    mejor = c;
+                }
+            }
+        }
+
+        return mejor;
+    }
+
+    public Grupo grupoMasRentable() {
+
+        Grupo mejor = null;
+
+        for (Grupo g : grupos.values()) {
+
+            if (mejor == null ||
+                    g.getRentabilidad() > mejor.getRentabilidad()) {
+
+                mejor = g;
+            }
+        }
+
+        return mejor;
+    }
+
+    public Jugador jugadorMasVueltas(ArrayList<Jugador> jugadores) {
+
+        Jugador mejor = null;
+
+        for (Jugador j : jugadores) {
+
+            if (mejor == null ||
+                    j.getVueltas() > mejor.getVueltas()) {
+
+                mejor = j;
+            }
+        }
+
+        return mejor;
+    }
+
 }
 

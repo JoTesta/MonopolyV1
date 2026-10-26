@@ -278,6 +278,33 @@ public class Jugador {
         return sb.toString();
     }
 
+    public Jugador jugadorEnCabeza(ArrayList<Jugador> jugadores) {
+
+        Jugador mejor = null; //inicializamos la variable de cual es mejor
+        float mayorFortunaTotal = -1;
+
+        for (Jugador j : jugadores) { //recorremos los jugadores
+
+            float fortunaTotal = j.getFortuna();
+
+            for (Casilla c : j.getPropiedades()) {
+
+                fortunaTotal += c.getValor();
+
+                for (Edificio e : c.getEdificios()) {
+                    fortunaTotal += e.getCoste();
+                }
+            }
+
+            if (mejor == null || fortunaTotal > mayorFortunaTotal) {
+                mejor = j;
+                mayorFortunaTotal = fortunaTotal;
+            }
+        }
+
+        return mejor;
+    }
+
 
 
 }
