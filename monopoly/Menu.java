@@ -28,6 +28,8 @@ public class Menu {
     private ArrayList<Carta> mazoComunidad; //ArrayList con cartas de comunidad
     private int contSuerte = 0;
     private int contComunidad = 0;
+    private float deudaPendiente = 0;
+    private Jugador acreedorPendiente = null;
 
 
     public Menu() {
@@ -231,10 +233,10 @@ public class Menu {
                 }
                 break;
 
-            case "delarar":
+            case "declarar":
                 if (p.length == 2 && p[1].equalsIgnoreCase("bancarrota")){declararBancarrota();}
                 else{System.out.println("Sintaxis: declarar bancarrota");}
-
+                break;
             default:
                 System.out.println("Comando no válido");
         }
@@ -294,6 +296,10 @@ public class Menu {
         }
 
         Jugador actual = jugadores.get(turno); //Coge de la lista jugadores al jugador que tiene actualmente el turno.
+        if (!solvente) {
+            System.out.println("Tienes una deuda pendiente. Hipoteca una propiedad o declara bancarrota.");
+            return;
+        }
         //comprobación de que no haya tirado ya los dados.
         if (tirado){
             System.out.println("El jugador "+actual.getNombre()+ " ya ha tirado los dados.");
@@ -331,18 +337,7 @@ public class Menu {
                     }
                     else{
                         System.out.println("Llevas 3 turnos y no tienes 500.000€ para salir de la cárcel. " + actual.getNombre() + " se declara en bancarrota.");
-                        actual.declararBancarrota(banca);
-                        jugadores.remove(turno);
-                        avatares.remove(actual.getAvatar());
-                        if (turno >= jugadores.size()) turno = 0;
-                        tirado = false;
-                        lanzamientos = 0;
-                        if (jugadores.size() == 1) {
-                            System.out.println("¡" + jugadores.get(0).getNombre() + " gana la partida!");
-                        }
-                        else {
-                            System.out.println("El jugador actual es " + jugadores.get(turno).getNombre());
-                        }
+                        eliminarJugador(actual,banca);
                         return;
                     }
 
@@ -377,16 +372,8 @@ public class Menu {
             tirado = true;
 
         } else {
-            solvente = casillaActual.evaluarCasilla(actual, banca, tirada);//Evalúa lo que ocurre en la casilla donde acaba de caer el jugador y guarda si pudo pagar sus deudas.
-            if (!solvente) {
-                System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
-            }
-            if (solvente && casillaActual.getTipo().equalsIgnoreCase("impuesto")) {
-                Casilla parking = tablero.encontrar_casilla("Parking");
-                if (parking != null) {
-                    parking.sumarValor(casillaActual.getImpuesto());
-                }
-            }
+            evaluarDestino(actual, casillaActual, tirada);
+
         }
         //repetir tirada en caso de lanzar dobles.
         if (dobles && !actual.isEnCarcel()){
@@ -482,12 +469,11 @@ public class Menu {
     private void listarVenta() {
         for (ArrayList<Casilla> lado : tablero.getPosiciones()) {
             for (Casilla c : lado) {
-                if (c.getDuenho() == banca && !(c.casEnVenta().isEmpty()) ){
+                if (c.getDuenho() == banca && !(c.casEnVenta().isEmpty())) {
                     System.out.println(c.casEnVenta());
                 }
             }
         }
-
     }
 
     //metodo privado para mostrar el jugador actual
@@ -528,6 +514,10 @@ public class Menu {
     private void acabarTurno() {
         if (jugadores.size() < 2) {
             System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
+        if (!solvente) {
+            System.out.println("No puedes acabar el turno con una deuda pendiente. Hipoteca una propiedad o declara bancarrota.");
             return;
         }
         if (!tirado) {
@@ -682,6 +672,8 @@ public class Menu {
         if (deudor.getFortuna()<cantidad){
             System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
             solvente = false;
+            deudaPendiente = cantidad;
+            acreedorPendiente = acreedor;
             return false;
         }
         else {
@@ -710,16 +702,16 @@ public class Menu {
         destino.anhadirAvatar(av);
         System.out.println(jugador.getNombre()+" se mueve hasta la casilla "+destino.getNombre()+ ".");
 
-        evaluarDestino(jugador,destino);
+        evaluarDestino(jugador,destino, 0);
     }
 
-    private void evaluarDestino(Jugador jugador, Casilla destino){
+    private void evaluarDestino(Jugador jugador, Casilla destino, int tirada){
         String t = destino.getTipo();
         if (t.equalsIgnoreCase("suerte") || t.equalsIgnoreCase("comunidad")) {
             elegirCarta(jugador, t);
             return;
         }
-        solvente = destino.evaluarCasilla(jugador, banca, 0);
+        solvente = destino.evaluarCasilla(jugador, banca, tirada);
         if (!solvente) {
             System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
         } else if (t.equalsIgnoreCase("impuesto")) {
@@ -766,9 +758,68 @@ public class Menu {
         }
     }
 
-    private void eliminarJugador(){}
 
-    private void declararBancarrota(){}
+    private void declararBancarrota(){
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
+        if (solvente) {
+            System.out.println("No puedes declararte en bancarrota: no tienes ninguna deuda pendiente.");
+            return;
+        }
+        Jugador actual = jugadores.get(turno);
+
+        // El acreedor es el dueño de la casilla donde está el avatar, o la banca en cualquier otro caso.
+        Jugador acreedor = banca;
+        Casilla lugar = actual.getAvatar().getLugar();
+        String t = lugar.getTipo();
+        boolean comprable = t.equalsIgnoreCase("solar") || t.equalsIgnoreCase("servicio") || t.equalsIgnoreCase("transporte");
+        if (comprable && lugar.getDuenho() != null && lugar.getDuenho() != actual) {
+            acreedor = lugar.getDuenho();
+        }
+
+        eliminarJugador(actual, acreedor);
+
+
+    }
+
+    private void eliminarJugador(Jugador quebrado, Jugador acreedor){
+        System.out.println("El jugador " + quebrado.getNombre() + " se declara en bancarrota. " + "Sus propiedades pasan a " + acreedor.getNombre() + ".");
+
+        quebrado.declararBancarrota(acreedor);
+        avatares.remove(quebrado.getAvatar());
+
+        int indice = jugadores.indexOf(quebrado);
+        jugadores.remove(quebrado);
+        if (indice < turno) turno--;             // por si no fuera el jugador actual
+        if (turno >= jugadores.size()) turno = 0;
+
+        //preparar el turno del siguiente.
+        tirado = false;
+        lanzamientos = 0;
+
+        if (jugadores.size() == 1) {
+            System.out.println("¡" + jugadores.get(0).getNombre() + " gana la partida!");
+        } else {
+            System.out.println("El jugador actual es " + jugadores.get(turno).getNombre());
+        }
+    }
+
+    private void reintentarDeuda(Jugador j){
+        if (solvente || deudaPendiente <= 0) return;
+        if (j.getFortuna()>=deudaPendiente){
+            float c = deudaPendiente;
+            Jugador a = acreedorPendiente;
+            deudaPendiente = 0; acreedorPendiente = null; solvente = true;
+            pagar(j, c, a);
+        }
+        else {
+            System.out.println("Aún no tienes dinero suficiente para pagar " + (long) deudaPendiente + "€.");
+        }
+    }
+
+
 
     // Convierte el tipo que escribe el usuario
     private String tipoSingular(String tipo) {

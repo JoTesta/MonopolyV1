@@ -271,7 +271,7 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("impuesto")) { //Comprobamos que la casilla es impuesto
             return "{\n" +
                     "tipo: impuesto,\n" +
-                    "a pagar: " + impuesto + "\n" +
+                    "apagar: " + impuesto + "\n" +
                     "}";
         }
 
