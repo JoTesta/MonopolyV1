@@ -51,6 +51,7 @@ public class Casilla {
         this.posicion = posicion;
         this.valor = valor;
         this.duenho = duenho;
+        this.hipoteca = valor / 2;
         this.edificios = new ArrayList<>();// inicializamos el arraylist de edificios
         this.avatares = new ArrayList<>();
     } // Si hacemos new Casilla("Trans1", "Transporte", 5, 500000, banca); se guardaría Nombre = Trans1, tipo = transporte...
