@@ -272,7 +272,7 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("impuesto")) { //Comprobamos que la casilla es impuesto
             return "{\n" +
                     "tipo: impuesto,\n" +
-                    "a pagar: " + impuesto + "\n" +
+                    "apagar: " + impuesto + "\n" +
                     "}";
         }
 
@@ -742,6 +742,35 @@ public class Casilla {
 
         }
 
+    }
+
+    // Devuelve los ids de los edificios de un tipo, por ejemplo [casa-1, casa-2], o "-" si no hay.
+    public String idsEdificios(String tipo) {
+        String ids = "";
+        for (Edificio e : edificios) {
+            if (e.getTipoEdificio().equalsIgnoreCase(tipo)) {
+                if (!ids.isEmpty()) {
+                    ids += ", ";
+                }
+                ids += e.getId();
+            }
+        }
+        if (ids.isEmpty()) {
+            return "-";
+        }
+        return "[" + ids + "]";
+    }
+
+    // Devuelve la información de los edificios de esta casilla para 'listar edificios <color>'.
+    public String infoEdificiosCasilla() {
+        return "{\n" +
+                "propiedad: " + this.nombre + ",\n" +
+                "hoteles: " + idsEdificios("hotel") + ",\n" +
+                "casas: " + idsEdificios("casa") + ",\n" +
+                "piscinas: " + idsEdificios("piscina") + ",\n" +
+                "pistasDeDeporte: " + idsEdificios("pista_deporte") + ",\n" +
+                "alquiler: " + (long) calcularAlquiler() + "\n" +
+                "}";
     }
 
 }
