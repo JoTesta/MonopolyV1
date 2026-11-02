@@ -250,12 +250,12 @@ public class Jugador {
 
     public String mostrarEstadisticas(){
         return "{\n" +
-                "dineroInvertido: " + dineroInvertido + ",\n" +
-                "pagoTasasEImpuestos: " + pagoTasasEImpuestos + ",\n" +
-                "pagoDeAlquileres: " + pagoDeAlquileres + ",\n" +
-                "cobroDeAlquileres: " + cobroDeAlquileres + ",\n" +
-                "pasarPorCasillaDeSalida: " + pasarPorCasillaDeSalida + ",\n" +
-                "premiosInversionesOBote: " + premiosInversionesOBote + ",\n" +
+                "dineroInvertido: " + (long) dineroInvertido + ",\n" +
+                "pagoTasasEImpuestos: " + (long) pagoTasasEImpuestos + ",\n" +
+                "pagoDeAlquileres: " + (long) pagoDeAlquileres + ",\n" +
+                "cobroDeAlquileres: " + (long) cobroDeAlquileres + ",\n" +
+                "pasarPorCasillaDeSalida: " + (long) pasarPorCasillaDeSalida + ",\n" +
+                "premiosInversionesOBote: " + (long) premiosInversionesOBote + ",\n" +
                 "vecesEnLaCarcel: " + vecesEnLaCarcel + "\n" +
                 "}";
     }
