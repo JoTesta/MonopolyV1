@@ -254,8 +254,6 @@ public class Menu {
                 if (p.length == 2 && p[1].equalsIgnoreCase("bancarrota")){declararBancarrota();}
                 else{System.out.println("Sintaxis: declarar bancarrota");}
                 break;
-            default:
-                System.out.println("Comando no válido");
 
             case "estadisticas":
                 if (p.length == 1) {
@@ -266,6 +264,11 @@ public class Menu {
                     System.out.println("Sintaxis: estadisticas | estadisticas <jugador>");
                 }
                 break;
+
+            default:
+                System.out.println("Comando no válido");
+
+
         }
     }
 
@@ -358,8 +361,7 @@ public class Menu {
                 if(actual.getTiradasCarcel()==3){
                     if (actual.getFortuna()>=Valor.SALIR_CARCEL){
                         System.out.println("Llevas ya tres turnos en la carcel. Pagas 500.000€ obligatoriamente y sales de la carcel");
-                        actual.sumarFortuna(-Valor.SALIR_CARCEL);
-                        actual.sumarGastos(Valor.SALIR_CARCEL);
+                        pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
                         actual.setEnCarcel(false);
                     }
                     else{
@@ -502,6 +504,7 @@ public class Menu {
         } else {
             System.out.println(" No puede recibir alquileres.");
         }
+        reintentarDeuda(actual);
     }
 
     private void deshipotecar(String nombre) {
@@ -618,8 +621,7 @@ public class Menu {
             System.out.println("El jugador " + actual.getNombre()+" no tiene el dinero necesario para salir de la carcel.");
             return;
         }
-        actual.sumarFortuna(-Valor.SALIR_CARCEL);
-        actual.sumarGastos(Valor.SALIR_CARCEL);
+        pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
         actual.setEnCarcel(false);
         System.out.println("El jugador "+ actual.getNombre()+ " paga "+ Valor.SALIR_CARCEL + " € y sale de la carcel. Puede lanzar los dados.");
 
@@ -752,6 +754,7 @@ public class Menu {
                     break;
 
                 case 3: //recibe 1.000.000€
+                    jugador.registrarPremioInversionOBote(1000000);
                     jugador.sumarFortuna(1000000);
                     System.out.println(jugador.getNombre() + " recibe 1000000€.");
                     break;
@@ -807,6 +810,7 @@ public class Menu {
 
                 case 4: //cobra 500.000€
                     jugador.sumarFortuna(500000);
+                    jugador.registrarPremioInversionOBote(500000);
                     System.out.println(jugador.getNombre() + " recibe 500000€.");
                     break;
 
@@ -830,10 +834,7 @@ public class Menu {
 
     private boolean pagar(Jugador deudor,float cantidad, Jugador acreedor, String concepto){
         if (deudor.getFortuna()<cantidad){
-            System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
-            solvente = false;
-            deudaPendiente = cantidad;
-            acreedorPendiente = acreedor;
+            registrarDeuda(cantidad,acreedor,concepto);
             return false;
         }
         else {
@@ -867,6 +868,7 @@ public class Menu {
         if (cobraSalida && destino.getPosicion()<origen.getPosicion()){
             jugador.sumarFortuna(Valor.SUMA_VUELTA);
             jugador.sumarVueltas();
+            jugador.registrarPasoSalida(Valor.SUMA_VUELTA);
             System.out.println("El jugador " + jugador.getNombre() + " pasa por la Salida y recibe 2000000€.");
         }
         origen.eliminarAvatar(av);
@@ -899,6 +901,7 @@ public class Menu {
                 acreedor = destino.getDuenho();
             } else if (t.equalsIgnoreCase("impuesto")) {
                 cantidad = destino.getImpuesto();
+                concepto = "tasa";
             }
             registrarDeuda(cantidad, acreedor,concepto);
         } else if (t.equalsIgnoreCase("impuesto")) {
@@ -921,6 +924,7 @@ public class Menu {
         if (destino.getPosicion() < inicial.getPosicion()) {
             jugador.sumarFortuna(Valor.SUMA_VUELTA);
             jugador.sumarVueltas();
+            jugador.registrarPasoSalida(Valor.SUMA_VUELTA);
             System.out.println("El jugador " + jugador.getNombre() + " pasa por la Salida y recibe 2000000€.");
         }
 
@@ -1040,6 +1044,7 @@ public class Menu {
             return;
         }
         casilla.venderEdificio(tipoSingular(tipo), cantidad, actual, banca);
+        reintentarDeuda(actual);
     }
 
     // Método que realiza las acciones asociadas al comando 'listar edificios'.

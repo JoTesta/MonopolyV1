@@ -275,7 +275,7 @@ public class Tablero {
         for (ArrayList<Casilla> lado : posiciones) { //recorremos las casillas
             for (Casilla c : lado) {
                 if (!c.esHipotecable()) continue;
-                if (c.getRentabilidad()>0 && mejor == null ||c.getRentabilidad() > mejor.getRentabilidad()) {
+                if (c.getRentabilidad()>0 && (mejor == null ||c.getRentabilidad() > mejor.getRentabilidad())) {
                     mejor = c;
                 }
             }
