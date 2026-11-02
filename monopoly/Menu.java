@@ -935,8 +935,10 @@ public class Menu {
         if (duenho==banca){
             System.out.println("La casilla "+ destino.getNombre()+ " no tiene dueño, puedes comprarla con: comprar "+destino.getNombre());
         }
-        else if (duenho!=jugador){
-           pagar(jugador,alquiler,duenho,"alquiler");
+        else if (duenho != jugador && !destino.isHipotecada()) {
+            if (pagar(jugador, alquiler, duenho, "alquiler")) {
+                destino.sumarRentabilidad(alquiler);
+            }
         }
     }
 
