@@ -291,7 +291,7 @@ public class Tablero {
         for (ArrayList<Casilla> lado : posiciones) {
             for (Casilla c : lado) {
 
-                if (c.getVecesVisitada()>0 && mejor == null || c.getVecesVisitada() > mejor.getVecesVisitada()) {
+                if (c.getVecesVisitada()>0 &&(mejor == null || c.getVecesVisitada() > mejor.getVecesVisitada())) {
 
                     mejor = c;
                 }
@@ -307,7 +307,7 @@ public class Tablero {
 
         for (Grupo g : grupos.values()) {
 
-            if (g.getRentabilidad()>0 && mejor == null || g.getRentabilidad() > mejor.getRentabilidad()) {
+            if (g.getRentabilidad()>0 && (mejor == null || g.getRentabilidad() > mejor.getRentabilidad())) {
 
                 mejor = g;
             }
@@ -322,7 +322,7 @@ public class Tablero {
 
         for (Jugador j : jugadores) {
 
-            if (j.getVueltas()>0 && mejor == null || j.getVueltas() > mejor.getVueltas()) {
+            if (j.getVueltas()>0 && (mejor == null || j.getVueltas() > mejor.getVueltas())) {
 
                 mejor = j;
             }

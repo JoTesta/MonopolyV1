@@ -582,11 +582,11 @@ public class Menu {
         Jugador enCabeza = tablero.jugadorEnCabeza(jugadores);
 
         System.out.println("{");
-        System.out.println("casillaMasRentable: " + rentable.getNombre() + ",");
-        System.out.println("grupoMasRentable: " + grupoRentable.getNombreGrupo() + ",");
-        System.out.println("casillaMasFrecuentada: " + frecuentada.getNombre() + ",");
-        System.out.println("jugadorMasVueltas: " + masVueltas.getNombre() + ",");
-        System.out.println("jugadorEnCabeza: " + enCabeza.getNombre());
+        System.out.println("casillaMasRentable: " + (rentable == null ? "-" : rentable.getNombre()) + ",");
+        System.out.println("grupoMasRentable: " + (grupoRentable == null ? "-" : grupoRentable.getNombreGrupo()) + ",");
+        System.out.println("casillaMasFrecuentada: " + (frecuentada == null ? "-" : frecuentada.getNombre()) + ",");
+        System.out.println("jugadorMasVueltas: " + (masVueltas == null ? "-" : masVueltas.getNombre()) + ",");
+        System.out.println("jugadorEnCabeza: " + (enCabeza == null ? "-" : enCabeza.getNombre()));
         System.out.println("}");
     }
 
