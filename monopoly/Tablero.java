@@ -336,5 +336,32 @@ public class Tablero {
         return mejor;
     }
 
+    public Jugador jugadorEnCabeza(ArrayList<Jugador> jugadores) {
+
+        Jugador mejor = null;
+        float mayorFortunaTotal = -1;
+
+        for (Jugador j : jugadores) {
+
+            float fortunaTotal = j.getFortuna();
+
+            for (Casilla c : j.getPropiedades()) {
+
+                fortunaTotal += c.getValor();
+
+                for (Edificio e : c.getEdificios()) {
+                    fortunaTotal += e.getCoste();
+                }
+            }
+
+            if (mejor == null || fortunaTotal > mayorFortunaTotal) {
+                mejor = j;
+                mayorFortunaTotal = fortunaTotal;
+            }
+        }
+
+        return mejor;
+    }
+
 }
 

@@ -179,6 +179,22 @@ public class Menu {
                 }
                 break;
 
+            case "hipotecar":
+                if (p.length == 2) {
+                    hipotecar(p[1]);
+                } else {
+                    System.out.println("Sintaxis: hipotecar <nombre_casilla>");
+                }
+                break;
+
+            case "deshipotecar":
+                if (p.length == 2) {
+                    deshipotecar(p[1]);
+                } else {
+                    System.out.println("Sintaxis: deshipotecar <nombre_casilla>");
+                }
+                break;
+
             case "edificar":
                 if (p.length == 2) {
                     edificar(p[1]);
@@ -239,6 +255,16 @@ public class Menu {
                 break;
             default:
                 System.out.println("Comando no válido");
+
+            case "estadisticas":
+                if (p.length == 1) {
+                    estadisticasGlobales();
+                } else if (p.length == 2) {
+                    estadisticasJugador(p[1]);
+                } else {
+                    System.out.println("Sintaxis: estadisticas | estadisticas <jugador>");
+                }
+                break;
         }
     }
 
@@ -425,6 +451,139 @@ public class Menu {
         //ejecutar la compra con el método que tenemos en casilla
         objetivo.comprarCasilla(actual,banca);
         System.out.println("El jugador "+actual.getNombre() + " compra la casilla "+ nombre + " por " + objetivo.getValor() + " €. Su fortuna actual es de "+ actual.getFortuna()+ " €.");
+    }
+
+    private void hipotecar(String nombre) {
+
+        Jugador actual = jugadores.get(turno);
+        Casilla objetivo = tablero.encontrar_casilla(nombre);
+
+        if (objetivo == null) {
+            System.out.println("No existe la casilla " + nombre + ".");
+            return;
+        }
+
+        if (!objetivo.esHipotecable()) {
+            System.out.println("La casilla " + nombre + " no se puede hipotecar.");
+            return;
+        }
+
+        if (objetivo.getDuenho() != actual) {
+            System.out.println(actual.getNombre() + " no puede hipotecar " +
+                    nombre + ". No es una propiedad que le pertenece.");
+            return;
+        }
+
+        if (objetivo.isHipotecada()) {
+            System.out.println(actual.getNombre() + " no puede hipotecar " +
+                    nombre + ". Ya está hipotecada.");
+            return;
+        }
+
+        if (objetivo.getTipo().equalsIgnoreCase("solar")
+                && objetivo.tieneEdificios()) {
+
+            System.out.println(actual.getNombre() + " no puede hipotecar " +
+                    nombre + ". Debe vender primero todos los edificios.");
+            return;
+        }
+
+        float cantidad = objetivo.getHipoteca();
+
+        objetivo.hipotecar(actual);
+
+        System.out.print(actual.getNombre() + " recibe " +
+                (long) cantidad + "€ por la hipoteca de " + nombre + ".");
+
+        if (objetivo.getGrupo() != null) {
+            System.out.println(" No puede recibir alquileres ni edificar en el grupo " +
+                    objetivo.getGrupo().getNombreGrupo() + ".");
+        } else {
+            System.out.println(" No puede recibir alquileres.");
+        }
+    }
+
+    private void deshipotecar(String nombre) {
+
+        Jugador actual = jugadores.get(turno);
+        Casilla objetivo = tablero.encontrar_casilla(nombre);
+
+        if (objetivo == null) {
+            System.out.println("No existe la casilla " + nombre + ".");
+            return;
+        }
+
+        if (!objetivo.esHipotecable()) {
+            System.out.println("La casilla " + nombre + " no se puede deshipotecar.");
+            return;
+        }
+
+        if (objetivo.getDuenho() != actual) {
+            System.out.println(actual.getNombre() + " no puede deshipotecar " +
+                    nombre + ". No es una propiedad que le pertenece.");
+            return;
+        }
+
+        if (!objetivo.isHipotecada()) {
+            System.out.println(actual.getNombre() + " no puede deshipotecar " +
+                    nombre + ". No está hipotecada.");
+            return;
+        }
+
+        if (actual.getFortuna() < objetivo.getHipoteca()) {
+            System.out.println(actual.getNombre() +
+                    " no tiene dinero suficiente para deshipotecar " + nombre + ".");
+            return;
+        }
+
+        float cantidad = objetivo.getHipoteca();
+
+        objetivo.deshipotecar(actual);
+
+        System.out.print(actual.getNombre() + " paga " +
+                (long) cantidad + "€ por deshipotecar " + nombre + ".");
+
+        if (objetivo.getGrupo() != null) {
+            System.out.println(" Ahora puede recibir alquileres y edificar en el grupo " +
+                    objetivo.getGrupo().getNombreGrupo() + ".");
+        } else {
+            System.out.println(" Ahora puede recibir alquileres.");
+        }
+    }
+
+    private void estadisticasJugador(String nombre) {
+
+        for (Jugador j : jugadores) {
+
+            if (j.getNombre().equalsIgnoreCase(nombre)) {
+                System.out.println(j.mostrarEstadisticas());
+                return;
+            }
+        }
+
+        System.out.println("No existe el jugador " + nombre + ".");
+    }
+
+    private void estadisticasGlobales() {
+
+        if (jugadores.isEmpty()) {
+            System.out.println("No hay jugadores.");
+            return;
+        }
+
+        Casilla rentable = tablero.casillaMasRentable();
+        Grupo grupoRentable = tablero.grupoMasRentable();
+        Casilla frecuentada = tablero.casillaMasFrecuentada();
+        Jugador masVueltas = tablero.jugadorMasVueltas(jugadores);
+        Jugador enCabeza = tablero.jugadorEnCabeza(jugadores);
+
+        System.out.println("{");
+        System.out.println("casillaMasRentable: " + rentable.getNombre() + ",");
+        System.out.println("grupoMasRentable: " + grupoRentable.getNombreGrupo() + ",");
+        System.out.println("casillaMasFrecuentada: " + frecuentada.getNombre() + ",");
+        System.out.println("jugadorMasVueltas: " + masVueltas.getNombre() + ",");
+        System.out.println("jugadorEnCabeza: " + enCabeza.getNombre());
+        System.out.println("}");
     }
 
     // Método que ejecuta el comando 'edificar <tipo>'.
