@@ -453,7 +453,7 @@ public class Menu {
         }
         //ejecutar la compra con el método que tenemos en casilla
         objetivo.comprarCasilla(actual,banca);
-        System.out.println("El jugador "+actual.getNombre() + " compra la casilla "+ nombre + " por " + objetivo.getValor() + " €. Su fortuna actual es de "+ actual.getFortuna()+ " €.");
+        System.out.println("El jugador "+actual.getNombre() + " compra la casilla "+ nombre + " por " + (long) objetivo.getValor() + " €. Su fortuna actual es de "+ (long)actual.getFortuna()+ " €.");
     }
 
     private void hipotecar(String nombre) {
@@ -623,7 +623,7 @@ public class Menu {
         }
         pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
         actual.setEnCarcel(false);
-        System.out.println("El jugador "+ actual.getNombre()+ " paga "+ Valor.SALIR_CARCEL + " € y sale de la carcel. Puede lanzar los dados.");
+        System.out.println("El jugador "+ actual.getNombre()+ " paga "+ (long) Valor.SALIR_CARCEL + " € y sale de la carcel. Puede lanzar los dados.");
 
     }
 
@@ -880,6 +880,7 @@ public class Menu {
     }
 
     private void evaluarDestino(Jugador jugador, Casilla destino, int tirada){
+        destino.incrementarVisitas();
         String t = destino.getTipo();
         String concepto = "alquiler";
         if (t.equalsIgnoreCase("suerte") || t.equalsIgnoreCase("comunidad")) {
@@ -911,6 +912,7 @@ public class Menu {
     }
 
     private void transporteMasCercano(Jugador jugador){
+
         int pos = jugador.getAvatar().getLugar().getPosicion();
         Casilla destino = null;
         //bucle para encontrar la casilla de transporte más cercana
@@ -931,6 +933,7 @@ public class Menu {
         inicial.eliminarAvatar(av);
         av.setLugar(destino);
         destino.anhadirAvatar(av);
+        destino.incrementarVisitas();
         System.out.println("El avatar " + av.getId() + " avanza hasta " + destino.getNombre() + ".");
 
         //si se cae en transporte y tiene dueño, se paga el doble de lo indicado.

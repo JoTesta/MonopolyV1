@@ -80,6 +80,7 @@ public class Avatar {
 
         //5. Si cae en IrCarcel, va a la cárcel
         if (this.lugar.getNombre().equalsIgnoreCase("IrCarcel")) {
+            this.lugar.incrementarVisitas();
             this.jugador.encarcelar(casillas);
         }
     }
