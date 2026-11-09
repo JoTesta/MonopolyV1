@@ -188,12 +188,35 @@ public class Jugador {
     }
 
     public void declararBancarrota(Jugador acreedor) {
+
         for (Casilla c : new ArrayList<>(propiedades)) {
+
             c.setDuenho(acreedor);
-            if (acreedor!=null) acreedor.anhadirPropiedad(c);
+
+            if (acreedor != null) {
+                acreedor.anhadirPropiedad(c);
+            }
+
+            // Si las propiedades vuelven a la banca
+            if (acreedor != null &&
+                    acreedor.getNombre().equalsIgnoreCase("Banca")) {
+
+                c.setHipotecada(false);
+                c.getEdificios().clear();
+            }
+
+            // Si las recibe otro jugador
+            else if (acreedor != null) {
+
+                for (Edificio e : c.getEdificios()) {
+                    e.setPropietario(acreedor);
+                }
+            }
         }
+
         propiedades.clear();
         this.fortuna = 0;
+
         if (avatar != null && avatar.getLugar() != null) {
             avatar.getLugar().eliminarAvatar(avatar);
         }

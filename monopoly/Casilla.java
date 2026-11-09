@@ -533,14 +533,17 @@ public class Casilla {
         return true;
     }
 
-    public void hipotecar(Jugador jugador){
+    public void hipotecar(Jugador jugador,Jugador banca){
         jugador.sumarFortuna(hipoteca);
+        banca.sumarFortuna(-hipoteca);
         this.hipotecada = true;
 
     }
-    public void deshipotecar (Jugador jugador){
+    public void deshipotecar (Jugador jugador,Jugador banca){
         jugador.sumarFortuna(-hipoteca);
-        this.hipotecada= false;
+        jugador.sumarGastos(hipoteca);
+        banca.sumarFortuna(hipoteca);
+        this.hipotecada = false;
     }
 
     public boolean tieneEdificios(){

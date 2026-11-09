@@ -30,7 +30,8 @@ public class Menu {
     private int contComunidad = 0;
     private float deudaPendiente = 0;
     private Jugador acreedorPendiente = null;
-    private String conceptoPendiente = null;   // junto a deudaPendiente y acreedorPendiente
+    private String conceptoPendiente = null;
+    private Casilla casillaDeuda = null;//
 
 
     public Menu() {
@@ -493,7 +494,7 @@ public class Menu {
 
         float cantidad = objetivo.getHipoteca();
 
-        objetivo.hipotecar(actual);
+        objetivo.hipotecar(actual,banca);
 
         System.out.print(actual.getNombre() + " recibe " +
                 (long) cantidad + "€ por la hipoteca de " + nombre + ".");
@@ -542,7 +543,7 @@ public class Menu {
 
         float cantidad = objetivo.getHipoteca();
 
-        objetivo.deshipotecar(actual);
+        objetivo.deshipotecar(actual,banca);
 
         System.out.print(actual.getNombre() + " paga " +
                 (long) cantidad + "€ por deshipotecar " + nombre + ".");
@@ -762,7 +763,7 @@ public class Menu {
                 case 4: //paga 250.000€ a cada jugador
                     float total = 250000*(jugadores.size()-1);      //calcula el total a pagar;
                     if (jugador.getFortuna()<total){
-                        registrarDeuda(total, null,"tasa");
+                        registrarDeuda(total, null,"tasa",null);
 
                     }
                     else{
@@ -834,7 +835,7 @@ public class Menu {
 
     private boolean pagar(Jugador deudor,float cantidad, Jugador acreedor, String concepto){
         if (deudor.getFortuna()<cantidad){
-            registrarDeuda(cantidad,acreedor,concepto);
+            registrarDeuda(cantidad,acreedor,concepto,null);
             return false;
         }
         else {
@@ -904,7 +905,7 @@ public class Menu {
                 cantidad = destino.getImpuesto();
                 concepto = "tasa";
             }
-            registrarDeuda(cantidad, acreedor,concepto);
+            registrarDeuda(cantidad, acreedor,concepto,null);
         } else if (t.equalsIgnoreCase("impuesto")) {
             Casilla parking = tablero.encontrar_casilla("Parking");
             if (parking != null) parking.sumarValor(destino.getImpuesto());
@@ -945,34 +946,41 @@ public class Menu {
         else if (duenho != jugador && !destino.isHipotecada()) {
             if (pagar(jugador, alquiler, duenho, "alquiler")) {
                 destino.sumarRentabilidad(alquiler);
+            }else {
+                casillaDeuda = destino;
             }
         }
     }
 
 
-    private void declararBancarrota(){
+    private void declararBancarrota() {
+
         if (jugadores.size() < 2) {
             System.out.println("Hacen falta al menos 2 jugadores para jugar.");
             return;
         }
+
         if (solvente) {
             System.out.println("No puedes declararte en bancarrota: no tienes ninguna deuda pendiente.");
             return;
         }
+
         Jugador actual = jugadores.get(turno);
 
-        // El acreedor es el dueño de la casilla donde está el avatar, o la banca en cualquier otro caso.
-        Jugador acreedor = banca;
-        Casilla lugar = actual.getAvatar().getLugar();
-        String t = lugar.getTipo();
-        boolean comprable = t.equalsIgnoreCase("solar") || t.equalsIgnoreCase("servicio") || t.equalsIgnoreCase("transporte");
-        if (comprable && lugar.getDuenho() != null && lugar.getDuenho() != actual) {
-            acreedor = lugar.getDuenho();
+        Jugador acreedor = acreedorPendiente;
+
+        // Caso especial de deuda a varios jugadores
+        if (acreedor == null) {
+            acreedor = banca;
         }
 
         eliminarJugador(actual, acreedor);
 
-
+        deudaPendiente = 0;
+        acreedorPendiente = null;
+        conceptoPendiente = null;
+        casillaDeuda = null;
+        solvente = true;
     }
 
     private void eliminarJugador(Jugador quebrado, Jugador acreedor){
@@ -997,23 +1005,53 @@ public class Menu {
         }
     }
 
-    private void reintentarDeuda(Jugador j){
-        if (solvente || deudaPendiente <= 0) return;
-        if (j.getFortuna()>=deudaPendiente){
-            float c = deudaPendiente;
-            Jugador a = acreedorPendiente;
-            String concepto =  conceptoPendiente;
-            deudaPendiente = 0; acreedorPendiente = null; solvente = true; conceptoPendiente=null;
-            if (a == null) {                                   // carta 4: pagar a todos
-                float parte = c / (jugadores.size() - 1);
-                for (Jugador otro : jugadores) {
-                    if (otro != j) pagar(j, parte, otro, concepto);
+    private void reintentarDeuda(Jugador j) {
+
+        if (solvente || deudaPendiente <= 0) {
+            return;
+        }
+
+        if (j.getFortuna() < deudaPendiente) {
+            System.out.println("Aún no tienes dinero suficiente para pagar " +
+                    (long) deudaPendiente + "€.");
+            return;
+        }
+
+        float cantidad = deudaPendiente;
+        Jugador acreedor = acreedorPendiente;
+        String concepto = conceptoPendiente;
+        Casilla casilla = casillaDeuda;
+
+        deudaPendiente = 0;
+        acreedorPendiente = null;
+        conceptoPendiente = null;
+        casillaDeuda = null;
+        solvente = true;
+
+        // Carta 4: pagar a todos
+        if (acreedor == null) {
+
+            float parte = cantidad / (jugadores.size() - 1);
+
+            for (Jugador otro : jugadores) {
+                if (otro != j) {
+                    pagar(j, parte, otro, concepto);
                 }
-            } else {
-                pagar(j, c, a,concepto);
-            }        }
-        else {
-            System.out.println("Aún no tienes dinero suficiente para pagar " + (long) deudaPendiente + "€.");
+            }
+
+        } else {
+
+            pagar(j, cantidad, acreedor, concepto);
+
+            // Si era alquiler pendiente, registramos la rentabilidad
+            if (concepto.equalsIgnoreCase("alquiler") && casilla != null) {
+
+                casilla.sumarRentabilidad(cantidad);
+
+                if (casilla.getGrupo() != null) {
+                    casilla.getGrupo().sumarRentabilidad(cantidad);
+                }
+            }
         }
     }
 
@@ -1107,11 +1145,14 @@ public class Menu {
         }
     }
 
-    private void registrarDeuda(float cantidad, Jugador acreedor, String concepto){
+    private void registrarDeuda(float cantidad, Jugador acreedor,String concepto, Casilla casilla) {
+
         solvente = false;
         deudaPendiente = cantidad;
         acreedorPendiente = acreedor;
         conceptoPendiente = concepto;
+        casillaDeuda = casilla;
+
         System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
     }
     }
