@@ -161,8 +161,8 @@ public class Jugador {
                 "  nombre: " + nombre + ",\n" +
                 "  avatar: " + (avatar != null ? avatar.getId() : "-") + ",\n" +
                 "  fortuna: " + (long) fortuna + ",\n" +
-                "  propiedades: " + props + "\n" +
-                "  hipotecas: " + nombresHipotecas() + "\n" +
+                "  propiedades: " + props + ",\n" +
+                "  hipotecas: " + nombresHipotecas() + ",\n" +
                 "  edificios: " + nombresEdificios() + "\n" +
                 "}";
     }

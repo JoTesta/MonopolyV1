@@ -77,10 +77,13 @@ public class Edificio {
     }
 
     public String infoEdificio(){
-
-        return "{ \nId: " + this.getId() + ",\n" + "Propietario: " + this.getPropietario().getNombre() + ",\n" +
-                "Casilla: " + this.getCasilla().getNombre() + ",\n" + "Grupo: " + this.getCasilla().getGrupo().getNombreGrupo() + ",\n" +
-                "Coste: " + (long) this.getCoste() + "\n }";
+        return "{\n" +
+                "id: " + this.getId() + ",\n" +
+                "propietario: " + this.getPropietario().getNombre() + ",\n" +
+                "casilla: " + this.getCasilla().getNombre() + ",\n" +
+                "grupo: " + this.getCasilla().getGrupo().getNombreGrupo() + ",\n" +
+                "coste: " + (long) this.getCoste() + "\n" +
+                "}";
     }
 
 

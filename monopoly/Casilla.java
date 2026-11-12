@@ -586,7 +586,7 @@ public class Casilla {
             return;
         }
         if(!this.tipo.equalsIgnoreCase("solar")){
-            System.out.println("No se puede edificar en esta casilla.");
+            System.out.println("No se puede en esta casilla.");
             return;
         }
         if(jugador != this.duenho){
@@ -707,10 +707,23 @@ public class Casilla {
             System.out.println("Tipo de edificio no valido.");
             return;
         }
+        if (cantidad <= 0) {
+            System.out.println("La cantidad a vender tiene que ser mayor que 0.");
+            return;
+        }
 
         if(duenho != jugador) {
             System.out.println("No se pueden vender " + tipo + " en " + this.getNombre() +
                     ". Esta propiedad no pertenece a " + jugador.getNombre() + ".");
+            return;
+        }
+
+        if (tipo.equalsIgnoreCase("hotel") && (contarEdificios("piscina") > 0 || contarEdificios("pista_deporte") > 0)) {
+            System.out.println("No se puede vender el hotel de " + this.nombre + " mientras tenga piscina o pista de deporte. Véndelas primero.");
+            return;
+        }
+        if (tipo.equalsIgnoreCase("piscina") && contarEdificios("pista_deporte") > 0) {
+            System.out.println("No se puede vender la piscina de " + this.nombre + " mientras tenga pista de deporte. Véndela primero.");
             return;
         }
 
@@ -736,13 +749,14 @@ public class Casilla {
         jugador.sumarFortuna(dinero);
         banca.sumarFortuna(-dinero);
 
-        if (aVender< cantidad){
-            System.out.println("Solamente se puede vender " + aVender + " " + tipo + ", recibiendo " + (long) dinero + "€.");
-        } else{
-            System.out.println(jugador.getNombre() + " ha vendido " + aVender + " " + tipo + " en " + this.nombre
-                    + ", recibiendo " + (long) dinero + "€. En la propiedad quedan " + contarEdificios(tipo) + " " + tipo + ".");
-
+        if (aVender < cantidad) {
+            System.out.println("Solamente se puede vender " + aVender + " " + tipo + "/s, recibiendo " + (long) dinero + "€.");
+        } else {
+            System.out.println(jugador.getNombre() + " ha vendido " + aVender + " " + tipo + "/s en " + this.nombre
+                    + ", recibiendo " + (long) dinero + "€. En la propiedad quedan " + contarEdificios(tipo) + " " + tipo + "/s.");
         }
+
+
 
     }
 
@@ -773,6 +787,27 @@ public class Casilla {
                 "pistasDeDeporte: " + idsEdificios("pista_deporte") + ",\n" +
                 "alquiler: " + (long) calcularAlquiler() + "\n" +
                 "}";
+    }
+
+    private String conArticulo(String tipo) {
+        if (tipo.equalsIgnoreCase("casa")) return "una casa";
+        if (tipo.equalsIgnoreCase("hotel")) return "un hotel";
+        if (tipo.equalsIgnoreCase("piscina")) return "una piscina";
+        if (tipo.equalsIgnoreCase("pista_deporte")) return "una pista de deporte";
+        return tipo;
+    }
+
+    private String singular(String tipo) {
+        if (tipo.equalsIgnoreCase("pista_deporte")) return "pista de deporte";
+        return tipo.toLowerCase();
+    }
+
+    private String plural(String tipo) {
+        if (tipo.equalsIgnoreCase("casa")) return "casas";
+        if (tipo.equalsIgnoreCase("hotel")) return "hoteles";
+        if (tipo.equalsIgnoreCase("piscina")) return "piscinas";
+        if (tipo.equalsIgnoreCase("pista_deporte")) return "pistas de deporte";
+        return tipo;
     }
 
 }

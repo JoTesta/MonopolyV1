@@ -1,8 +1,7 @@
 package monopoly;
 
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -167,7 +166,11 @@ public class Menu {
                 } else if ((p.length == 3) && p[1].equalsIgnoreCase("casilla")) {
                     descCasilla(p[2]);
                 } else if ((p.length == 2)) {
-                    descCasilla(p[1]);
+                    if (tablero.encontrar_casilla(p[1]) != null) {
+                        descCasilla(p[1]);
+                    } else {
+                        descJugador(new String[]{"describir", "jugador", p[1]});
+                    }
                 } else
                     System.out.println("Sintaxis: describir <casilla> | describir jugador <nombre> | describir avatar <id>");
 
@@ -1155,5 +1158,5 @@ public class Menu {
 
         System.out.println("No tienes dinero suficiente. Debes hipotecar alguna propiedad o declararte en bancarrota.");
     }
-    }
+}
 
