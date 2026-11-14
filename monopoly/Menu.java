@@ -31,6 +31,7 @@ public class Menu {
     private Jugador acreedorPendiente = null;
     private String conceptoPendiente = null;
     private Casilla casillaDeuda = null;//
+    private boolean partidaIniciada;        //controlar inicio de la partida para crear jugadores
 
 
     public Menu() {
@@ -62,12 +63,21 @@ public class Menu {
         this.mazoSuerte = new ArrayList<>();
         this.contSuerte = 0;
         this.contComunidad = 0;
+        this.partidaIniciada = false;
         crearMazos();
     }
 
     private void crearJugador(String nombre, String tipo) {
         if (jugadores.size() >= 4) {
             System.out.println("Ya hay 4 jugadores registrados, no se pueden añadir más");
+            return;
+        }
+        if (this.turno>0){
+            System.out.println("Solo se pueden crear jugadores en el primer turno de partida");
+            return;
+        }
+        if (nombre.equalsIgnoreCase("banca")){
+            System.out.println("El jugador no se puede llamar banca");
             return;
         }
         for (Jugador j : jugadores) {
@@ -339,6 +349,7 @@ public class Menu {
             System.out.println("El jugador "+actual.getNombre()+ " ya ha tirado los dados.");
             return;
         }
+        partidaIniciada = true;     //primera tirada de dados, ya no se pueden crear jugadores.
 
         //obtener valor de los dados.
         int valorDado1;
@@ -627,7 +638,7 @@ public class Menu {
         }
         pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
         actual.setEnCarcel(false);
-        System.out.println("El jugador "+ actual.getNombre()+ " paga "+ (long) Valor.SALIR_CARCEL + " € y sale de la carcel. Puede lanzar los dados.");
+        System.out.println("El jugador "+ actual.getNombre()+" sale de la carcel. Puede lanzar los dados.");
 
     }
 
@@ -989,7 +1000,7 @@ public class Menu {
     private void eliminarJugador(Jugador quebrado, Jugador acreedor){
         System.out.println("El jugador " + quebrado.getNombre() + " se declara en bancarrota. " + "Sus propiedades pasan a " + acreedor.getNombre() + ".");
 
-        quebrado.declararBancarrota(acreedor);
+        quebrado.declararBancarrota(acreedor, banca);
         avatares.remove(quebrado.getAvatar());
 
         int indice = jugadores.indexOf(quebrado);
