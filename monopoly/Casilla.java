@@ -586,7 +586,7 @@ public class Casilla {
             return;
         }
         if(!this.tipo.equalsIgnoreCase("solar")){
-            System.out.println("No se puede en esta casilla.");
+            System.out.println("No se puede edificar en esta casilla.");
             return;
         }
         if(jugador != this.duenho){
@@ -789,25 +789,5 @@ public class Casilla {
                 "}";
     }
 
-    private String conArticulo(String tipo) {
-        if (tipo.equalsIgnoreCase("casa")) return "una casa";
-        if (tipo.equalsIgnoreCase("hotel")) return "un hotel";
-        if (tipo.equalsIgnoreCase("piscina")) return "una piscina";
-        if (tipo.equalsIgnoreCase("pista_deporte")) return "una pista de deporte";
-        return tipo;
-    }
-
-    private String singular(String tipo) {
-        if (tipo.equalsIgnoreCase("pista_deporte")) return "pista de deporte";
-        return tipo.toLowerCase();
-    }
-
-    private String plural(String tipo) {
-        if (tipo.equalsIgnoreCase("casa")) return "casas";
-        if (tipo.equalsIgnoreCase("hotel")) return "hoteles";
-        if (tipo.equalsIgnoreCase("piscina")) return "piscinas";
-        if (tipo.equalsIgnoreCase("pista_deporte")) return "pistas de deporte";
-        return tipo;
-    }
 
 }

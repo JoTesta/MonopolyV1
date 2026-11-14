@@ -1113,11 +1113,13 @@ public class Menu {
     private void listarEdificiosGrupo(String color) {
         boolean existeGrupo = false;
         boolean puedeCasa = false, puedeHotel = false, puedePiscina = false, puedePista = false;
+        boolean hayHipoteca = false;
 
         for (ArrayList<Casilla> lado : tablero.getPosiciones()) {
             for (Casilla c : lado) {
                 if (c.getGrupo() != null && c.getGrupo().getNombreGrupo().equalsIgnoreCase(color)) {
                     existeGrupo = true;
+                    if (c.isHipotecada()) hayHipoteca = true;
                     System.out.println(c.infoEdificiosCasilla());
 
                     // ¿Qué se podría construir todavía en esta casilla?
@@ -1131,6 +1133,11 @@ public class Menu {
 
         if (!existeGrupo) {
             System.out.println("No existe el grupo " + color + ".");
+            return;
+        }
+
+        if (hayHipoteca) {
+            System.out.println("No se puede edificar en el grupo " + color + " porque hay una propiedad hipotecada.");
             return;
         }
 
