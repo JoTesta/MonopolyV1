@@ -1,0 +1,20 @@
+crear jugador Pedro coche
+crear jugador Maria pelota
+crear jugador Ana sombrero
+listar jugadores
+listar avatares
+estadisticas
+estadisticas Pedro
+listar edificios
+listar edificios Blanco
+hipotecar Solar1
+deshipotecar Solar1
+describir Solar1
+lanzar dados 1+2
+acabar turno
+lanzar dados 2+3
+acabar turno
+lanzar dados 3+4
+estadisticas
+listar jugadores
+listar edificios

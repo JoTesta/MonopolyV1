@@ -1,0 +1,11 @@
+crear jugador Pedro coche
+crear jugador Maria pelota
+crear jugador Ana sombrero
+listar jugadores
+lanzar dados 1+2
+crear jugador Luis esfinge
+describir jugador Pedro
+describir Solar1
+listar enventa
+estadisticas Pedro
+estadisticas

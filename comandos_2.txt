@@ -1,0 +1,13 @@
+crear jugador Pedro coche
+crear jugador Maria pelota
+listar jugadores
+listar avatares
+jugador
+ver
+listar enventa
+describir Solar1
+lanzar dados 1+2
+acabar turno
+jugador
+lanzar dados 2+3
+acabar turno

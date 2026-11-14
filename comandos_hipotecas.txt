@@ -1,0 +1,130 @@
+crear jugador Pedro coche
+crear jugador Maria pelota
+crear jugador Ana sombrero
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 2+3
+comprar Trans1
+acabar turno
+lanzar dados 3+6
+comprar Solar5
+acabar turno
+
+lanzar dados 4+6
+acabar turno
+lanzar dados 2+3
+acabar turno
+lanzar dados 3+6
+comprar Solar10
+acabar turno
+
+lanzar dados 4+6
+acabar turno
+lanzar dados 2+3
+acabar turno
+lanzar dados 3+6
+comprar Solar16
+acabar turno
+
+lanzar dados 4+6
+acabar turno
+lanzar dados 2+3
+acabar turno
+lanzar dados 1+6
+comprar Solar20
+acabar turno
+
+lanzar dados 1+2
+acabar turno
+lanzar dados 2+3
+acabar turno
+lanzar dados 2+4
+acabar turno
+
+lanzar dados 2+6
+acabar turno
+lanzar dados 1+6
+acabar turno
+lanzar dados 5+6
+comprar Solar6
+acabar turno
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 2+6
+acabar turno
+lanzar dados 4+6
+comprar Solar12
+acabar turno
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 1+6
+acabar turno
+lanzar dados 2+6
+comprar Solar17
+acabar turno
+
+lanzar dados 3+6
+comprar Solar21
+acabar turno
+lanzar dados 1+6
+acabar turno
+lanzar dados 3+6
+hipotecar Solar5
+describir Solar5
+acabar turno
+
+lanzar dados 1+1
+comprar Solar22
+edificar casa
+edificar casa
+edificar casa
+edificar casa
+hipotecar Solar22
+hipotecar Solar21
+hipotecar Solar21
+deshipotecar Solar21
+deshipotecar Solar21
+hipotecar Solar21
+lanzar dados 1+3
+acabar turno
+hipotecar Solar21
+deshipotecar Solar21
+lanzar dados 2+4
+acabar turno
+lanzar dados 2+4
+acabar turno
+
+lanzar dados 1+6
+acabar turno
+lanzar dados 2+6
+comprar Solar7
+acabar turno
+lanzar dados 3+6
+acabar turno
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 4+6
+comprar Solar13
+acabar turno
+lanzar dados 2+6
+acabar turno
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 5+6
+acabar turno
+lanzar dados 2+6
+acabar turno
+
+lanzar dados 3+6
+acabar turno
+lanzar dados 2+3
+declarar bancarrota
+describir jugador Pedro
+lanzar dados 3+6
+declarar bancarrota
+describir Solar5
