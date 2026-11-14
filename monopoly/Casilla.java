@@ -153,6 +153,7 @@ public class Casilla {
                     actual.registrarPagoAlquiler(alquiler);
                     duenho.registrarCobroAlquiler(alquiler);
                     this.sumarRentabilidad(alquiler);
+                    System.out.println("Se han pagado " + (long) alquiler + " € de alquiler a " + duenho.getNombre() + ".");
 
                     return true; //Confirmamos que el jugador ha pagado su deuda
                 }
@@ -180,6 +181,7 @@ public class Casilla {
                     actual.registrarPagoAlquiler(transporte);
                     duenho.registrarCobroAlquiler(transporte);
                     this.sumarRentabilidad(transporte);
+                    System.out.println("Se han pagado " + (long) transporte + " € de alquiler a " + duenho.getNombre() + ".");
 
                     return true; //Confirmamos que el jugador pudo pagar el importe
                 }
@@ -271,7 +273,7 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("impuesto")) { //Comprobamos que la casilla es impuesto
             return "{\n" +
                     "tipo: impuesto,\n" +
-                    "apagar: " + impuesto + "\n" +
+                    "apagar: " + (long) impuesto + "\n" +
                     "}";
         }
 
@@ -289,7 +291,7 @@ public class Casilla {
             }
 
             return "{\n" +
-                    "bote: " + valor + ",\n" +
+                    "bote: " + (long) valor + ",\n" +
                     "jugadores: [" + jugadoresParking + "]\n" +
                     "}";
         }
@@ -297,17 +299,20 @@ public class Casilla {
 
             String jugadoresCarcel = ""; //Creamos una cadena vacia donde guardaremos los nombres de los jugadores que esten en la carcel
 
-            for (Avatar av : avatares) { //Recorremos todos los avatares que esten situados en esta casilla
+            for (Avatar av : avatares) {
 
-                Jugador jugador = av.getJugador(); //Cogemos el jugador propietario del avatar y lo guardamos en una variable llamada jugador
+                Jugador jugador = av.getJugador();
 
-                if (!jugadoresCarcel.isEmpty()) { //Si la cadena de jugadores no esta vacia
-                    jugadoresCarcel += " "; //Ponemos un espacio antes del siguiente
+                if (jugador.isEnCarcel()) {
+
+                    if (!jugadoresCarcel.isEmpty()) {
+                        jugadoresCarcel += " ";
+                    }
+
+                    jugadoresCarcel += "[" +
+                            jugador.getNombre() + "," +
+                            jugador.getTiradasCarcel() + "]";
                 }
-
-                jugadoresCarcel += "[" +
-                        jugador.getNombre() + "," +
-                        jugador.getTiradasCarcel() + "]";
             }
 
             return "{\n" +
@@ -329,7 +334,7 @@ public class Casilla {
             return "{\n" +
                     "tipo: transporte,\n" +
                     "propietario: " + duenho.getNombre() + ",\n" +
-                    "valor: " + valor + ",\n" +
+                    "valor: " + (long) valor + ",\n" +
                     "alquiler: 250000\n" +
                     "}";
         }
@@ -339,7 +344,7 @@ public class Casilla {
             return "{\n" +
                     "tipo: servicio,\n" +
                     "propietario: " + duenho.getNombre() + ",\n" +
-                    "valor: " + valor + ",\n" +
+                    "valor: " + (long) valor + ",\n" +
                     "factor servicio: " + Valor.FACTOR_SERVICIOS + "\n" +
                     "}";
         }
@@ -347,21 +352,18 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("solar")) { //Comprobamos que la casilla es un solar
 
             return "{\n" +
-                    "tipo: solar,\n" +
-                    "grupo: " + grupo.getNombreGrupo() + ",\n" +
-                    "propietario: " + duenho.getNombre() + ",\n" +
-                    "valor: " + valor + ",\n" +
-                    "alquiler: " + impuesto + ",\n" +
-                    "hipoteca: " + hipoteca + ",\n" +
+                    "valor: " + (long) valor + ",\n" +
+                    "alquiler: " + (long) impuesto + ",\n" +
+                    "hipoteca: " + (long) hipoteca + ",\n" +
                     "hipotecada: " + hipotecada + ",\n" +
-                    "valor hotel: " + valorHotel + ",\n" +
-                    "valor casa: " + valorCasa + ",\n" +
-                    "valor piscina: " + valorPiscina + ",\n" +
-                    "valor pista de deporte: " + valorPistaDeporte + ",\n" +
-                    "alquiler casa: " + alquilerCasa + ",\n" +
-                    "alquiler hotel: " + alquilerHotel + ",\n" +
-                    "alquiler piscina: " + alquilerPiscina + ",\n" +
-                    "alquiler pista de deporte: " + alquilerPistaDeporte + "\n" +
+                    "valor hotel: " + (long) valorHotel + ",\n" +
+                    "valor casa: " + (long) valorCasa + ",\n" +
+                    "valor piscina: " + (long) valorPiscina + ",\n" +
+                    "valor pista de deporte: " + (long) valorPistaDeporte + ",\n" +
+                    "alquiler casa: " + (long) alquilerCasa + ",\n" +
+                    "alquiler hotel: " + (long) alquilerHotel + ",\n" +
+                    "alquiler piscina: " + (long) alquilerPiscina + ",\n" +
+                    "alquiler pista de deporte: " + (long) alquilerPistaDeporte + "\n" +
                     "}";
         }
 
@@ -379,21 +381,21 @@ public class Casilla {
             return "{\n" +
                     "tipo: solar,\n" +
                     "grupo: " + grupo.getNombreGrupo() + ",\n" +
-                    "valor: " + valor + "\n" +
+                    "valor: " + (long) valor +
                     "}";
         }
 
         if (tipo.equalsIgnoreCase("transporte")) { //Si la casilla es un trasnporte
             return "{\n" +
                     "tipo: transporte,\n" +
-                    "valor: " + valor + "\n" +
+                    "valor: " + (long) valor + "\n" +
                     "}";
         }
 
         if (tipo.equalsIgnoreCase("servicio")) { //Si la casilla es un servicio
             return "{\n" +
                     "tipo: servicio,\n" +
-                    "valor: " + valor + "\n" +
+                    "valor: " + (long) valor + "\n" +
                     "}";
         }
 
@@ -491,46 +493,6 @@ public class Casilla {
         return tipo.equalsIgnoreCase("solar") ||
                 tipo.equalsIgnoreCase("transporte") ||
                 tipo.equalsIgnoreCase("servicio");
-    }
-    public boolean puedeHipotecar(Jugador jugador) { //función para hipotecar
-
-        if (!esHipotecable()) { //si no es hipotecable
-            return false;
-        }
-
-        if (duenho != jugador) { //si el dueño es distinto del jugador
-            return false;
-        }
-
-        if (hipotecada) { //si ya esta hipotecada
-            return false;
-        }
-
-        if (tipo.equalsIgnoreCase("solar") && tieneEdificios()){
-            return false;
-        }
-
-        return true;
-    }
-    public boolean puedeDeshipotecar(Jugador jugador) {
-
-        if (!esHipotecable()) { //si no es hipotecable
-            return false;
-        }
-
-        if (duenho != jugador) { //si el dueño no es el jugador
-            return false;
-        }
-
-        if (!hipotecada) { //si no esta hipotecada
-            return false;
-        }
-
-        if (jugador.getFortuna() < hipoteca) { //si el jugador no tiene dinero suficiente
-            return false;
-        }
-
-        return true;
     }
 
     public void hipotecar(Jugador jugador,Jugador banca){
