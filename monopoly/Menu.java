@@ -472,7 +472,10 @@ public class Menu {
     }
 
     private void hipotecar(String nombre) {
-
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
         Jugador actual = jugadores.get(turno);
         Casilla objetivo = tablero.encontrar_casilla(nombre);
 
@@ -515,7 +518,7 @@ public class Menu {
 
         if (objetivo.getGrupo() != null) {
             System.out.println(" No puede recibir alquileres ni edificar en el grupo " +
-                    objetivo.getGrupo().getNombreGrupo() + ".");
+                    objetivo.getGrupo().getNombreGrupo().toLowerCase() + ".");
         } else {
             System.out.println(" No puede recibir alquileres.");
         }
@@ -523,7 +526,10 @@ public class Menu {
     }
 
     private void deshipotecar(String nombre) {
-
+        if (jugadores.size() < 2) {
+            System.out.println("Hacen falta al menos 2 jugadores para jugar.");
+            return;
+        }
         Jugador actual = jugadores.get(turno);
         Casilla objetivo = tablero.encontrar_casilla(nombre);
 
@@ -564,7 +570,7 @@ public class Menu {
 
         if (objetivo.getGrupo() != null) {
             System.out.println(" Ahora puede recibir alquileres y edificar en el grupo " +
-                    objetivo.getGrupo().getNombreGrupo() + ".");
+                    objetivo.getGrupo().getNombreGrupo().toLowerCase() + ".");
         } else {
             System.out.println(" Ahora puede recibir alquileres.");
         }
@@ -919,7 +925,7 @@ public class Menu {
                 cantidad = destino.getImpuesto();
                 concepto = "tasa";
             }
-            registrarDeuda(cantidad, acreedor,concepto,null);
+            registrarDeuda(cantidad, acreedor,concepto,destino);
         } else if (t.equalsIgnoreCase("impuesto")) {
             Casilla parking = tablero.encontrar_casilla("Parking");
             if (parking != null) parking.sumarValor(destino.getImpuesto());
