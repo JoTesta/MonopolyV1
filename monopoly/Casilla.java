@@ -352,6 +352,9 @@ public class Casilla {
         if (tipo.equalsIgnoreCase("solar")) { //Comprobamos que la casilla es un solar
 
             return "{\n" +
+                    "tipo: solar,\n" +
+                    "grupo: " + grupo.getNombreGrupo() + ",\n" +
+                    "propietario: " + duenho.getNombre() + ",\n" +
                     "valor: " + (long) valor + ",\n" +
                     "alquiler: " + (long) impuesto + ",\n" +
                     "hipoteca: " + (long) hipoteca + ",\n" +

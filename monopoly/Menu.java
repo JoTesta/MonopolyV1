@@ -72,8 +72,8 @@ public class Menu {
             System.out.println("Ya hay 4 jugadores registrados, no se pueden añadir más");
             return;
         }
-        if (this.turno>0){
-            System.out.println("Solo se pueden crear jugadores en el primer turno de partida");
+        if (partidaIniciada) {
+            System.out.println("Solo se pueden crear jugadores antes de iniciar la partida");
             return;
         }
         if (nombre.equalsIgnoreCase("banca")){
@@ -376,7 +376,9 @@ public class Menu {
                 if(actual.getTiradasCarcel()==3){
                     if (actual.getFortuna()>=Valor.SALIR_CARCEL){
                         System.out.println("Llevas ya tres turnos en la carcel. Pagas 500.000€ obligatoriamente y sales de la carcel");
-                        pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
+                        actual.sumarFortuna(-Valor.SALIR_CARCEL);
+                        actual.sumarGastos(Valor.SALIR_CARCEL);
+                        actual.registrarPagoTasasImpuesto(Valor.SALIR_CARCEL);
                         actual.setEnCarcel(false);
                     }
                     else{
@@ -642,7 +644,9 @@ public class Menu {
             System.out.println("El jugador " + actual.getNombre()+" no tiene el dinero necesario para salir de la carcel.");
             return;
         }
-        pagar(actual, Valor.SALIR_CARCEL, banca, "tasa");
+        actual.sumarFortuna(-Valor.SALIR_CARCEL);
+        actual.sumarGastos(Valor.SALIR_CARCEL);
+        actual.registrarPagoTasasImpuesto(Valor.SALIR_CARCEL);
         actual.setEnCarcel(false);
         System.out.println("El jugador "+ actual.getNombre()+" sale de la carcel. Puede lanzar los dados.");
 
