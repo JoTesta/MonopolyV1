@@ -11,8 +11,11 @@ import partida.*;
 
 
 public class Menu {
-    //Atributos
+    //consola compartida por el programa
+    public static ConsolaNormal consola = new ConsolaNormal();
 
+
+    //Atributos
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
     private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
