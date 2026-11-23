@@ -81,6 +81,14 @@ public class Casilla {
         this.avatares = new ArrayList<>();
     }
 
+    // Constructor que usarán las subclases (Propiedad, Impuesto, Especial...).
+    protected Casilla(String nombre, int posicion) {
+        this.nombre = nombre;
+        this.posicion = posicion;
+        this.avatares = new ArrayList<>();
+        this.edificios = new ArrayList<>();
+    }
+
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
         avatares.add(av);
